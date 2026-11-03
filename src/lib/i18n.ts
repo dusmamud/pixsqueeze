@@ -7,7 +7,7 @@ import hi from '../locales/hi.json';
 // Add a new locale by adding its JSON here + one entry in LanguageSwitcher.
 void i18n.use(initReactI18next).init({
   resources: { en: { translation: en }, hi: { translation: hi } },
-  lng: localStorage.getItem('pixsqueeze-lng') || 'en',
+  lng: localStorage.getItem('imgcompressor-lng') || 'en',
   fallbackLng: 'en',
   interpolation: { escapeValue: false },
 });

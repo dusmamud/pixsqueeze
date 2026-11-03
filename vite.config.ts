@@ -12,8 +12,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg'],
       manifest: {
-        name: 'PixSqueeze',
-        short_name: 'PixSqueeze',
+        name: 'ImgCompressor',
+        short_name: 'ImgCompressor',
         description: 'Compress images 100% in your browser. No uploads, no backend.',
         theme_color: '#0f1115',
         background_color: '#0f1115',

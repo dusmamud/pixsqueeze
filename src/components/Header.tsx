@@ -16,7 +16,7 @@ export default function Header() {
   const { t, i18n } = useTranslation();
   const { theme, setTheme } = useCompressorStore();
   const [open, setOpen] = useState(false);
-  const changeLng = (lng: string) => { void i18n.changeLanguage(lng); localStorage.setItem('pixsqueeze-lng', lng); };
+  const changeLng = (lng: string) => { void i18n.changeLanguage(lng); localStorage.setItem('imgcompressor-lng', lng); };
   const linkCls = ({ isActive }: { isActive: boolean }) =>
     `rounded-full px-3 py-1.5 text-sm font-medium ${isActive ? 'text-white' : 'muted'}`;
   return (

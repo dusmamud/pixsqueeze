@@ -1,7 +1,7 @@
-# PixSqueeze — Test Report
+# ImgCompressor — Test Report
 
 Date: 2026-11-03 (build verified on this machine)
-App: PixSqueeze, 100% client-side, no backend
+App: ImgCompressor, 100% client-side, no backend
 
 ## 1. Build & type check — PASS
 
@@ -18,7 +18,7 @@ App: PixSqueeze, 100% client-side, no backend
 | Route | Result |
 |---|---|
 | `/` (Compressor) | 200, H1 "Smaller images. Zero uploads." |
-| `/about` | 200, H1 "About PixSqueeze" |
+| `/about` | 200, H1 "About ImgCompressor" |
 | `/privacy` | 200, H1 "Privacy Policy" |
 | `/terms` | 200, H1 "Terms of Use" |
 | `/faq` | 200, H1 "Frequently Asked Questions" |

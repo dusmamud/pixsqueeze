@@ -29,7 +29,7 @@ export default function HomePage() {
   const downloadAllZip = async () => {
     const done = s.jobs.filter((j) => j.resultUrl && j.resultName);
     const files = await Promise.all(done.map(async (j) => ({ name: j.resultName!, blob: await fetch(j.resultUrl!).then((r) => r.blob()) })));
-    if (files.length) void downloadAsZip(files, 'pixsqueeze-compressed.zip');
+    if (files.length) void downloadAsZip(files, 'imgcompressor-compressed.zip');
   };
   return (
     <div>

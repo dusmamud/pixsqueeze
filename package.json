@@ -1,9 +1,9 @@
 {
-  "name": "pixsqueeze",
+  "name": "imgcompressor",
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "PixSqueeze — 100% client-side image compressor. No backend, no uploads.",
+  "description": "ImgCompressor — 100% client-side image compressor. No backend, no uploads.",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

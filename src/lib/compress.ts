@@ -94,7 +94,7 @@ export async function compressImage(file: File, opts: CompressOptions): Promise<
   } catch (err) {
     // WASM failed (e.g. blocked) — fall back to the native canvas encoder
     // rather than failing the whole job. PNG has no quality knob in canvas.
-    console.warn(`[pixsqueeze] WASM ${opts.format} failed, canvas fallback`, err);
+    console.warn(`[imgcompressor] WASM ${opts.format} failed, canvas fallback`, err);
     return imageDataToBlob(raw, FORMAT_MIME[opts.format], opts.format === 'png' ? 1 : q);
   }
   throw new Error('Unknown format');

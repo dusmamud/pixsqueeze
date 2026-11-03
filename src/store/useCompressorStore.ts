@@ -55,7 +55,7 @@ export const useCompressorStore = create<State>((set) => ({
   })),
   setTheme: (theme) => {
     document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('pixsqueeze-theme', theme);
+    localStorage.setItem('imgcompressor-theme', theme);
     set({ theme });
   },
   updateJob: (id, p) => set((s) => ({ jobs: s.jobs.map((j) => (j.id === id ? { ...j, ...p } : j)) })),

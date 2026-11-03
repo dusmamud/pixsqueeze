@@ -15,7 +15,7 @@ export default function Footer() {
         </div>
         <nav aria-label="Product"><p className="mb-3 text-sm font-semibold">{t('footerProduct')}</p><ul className="muted space-y-2 text-sm"><li><Link to="/">{t('navHome')}</Link></li><li><Link to="/about">{t('navAbout')}</Link></li><li><Link to="/faq">{t('navFaq')}</Link></li></ul></nav>
         <nav aria-label="Legal"><p className="mb-3 text-sm font-semibold">{t('footerLegal')}</p><ul className="muted space-y-2 text-sm"><li><Link to="/privacy">{t('navPrivacy')}</Link></li><li><Link to="/terms">{t('navTerms')}</Link></li></ul></nav>
-        <div><p className="mb-3 text-sm font-semibold">PixSqueeze</p><p className="muted text-sm">{t('heroSub')}</p></div>
+        <div><p className="mb-3 text-sm font-semibold">ImgCompressor</p><p className="muted text-sm">{t('heroSub')}</p></div>
       </div>
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-4 pb-6 text-xs sm:flex-row" style={{ borderTop: '1px solid var(--border)', paddingTop: 16 }}>
         <span className="muted">© {year} {t('brand')}. {t('footerNote')}</span>

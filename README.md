@@ -1,4 +1,4 @@
-# PixSqueeze — Client-Side Image Compressor
+# ImgCompressor — Client-Side Image Compressor
 
 > Random placeholder name — rename it in `package.json`, `index.html`,
 > `vite.config.ts` (PWA manifest) and `src/locales/*.json` whenever you like.
@@ -40,7 +40,7 @@ The workflow is already in `.github/workflows/deploy-cloudflare-pages.yml`.
 It builds on push to `main` and deploys `dist/` with Wrangler.
 
 1. Create a Cloudflare Pages project (or let the first deploy create it —
-   set the project name in the workflow, currently `pixsqueeze`).
+   set the project name in the workflow, currently `imgcompressor`).
 2. In GitHub: repo → Settings → Secrets and variables → Actions, add:
    - `CLOUDFLARE_API_TOKEN`
    - `CLOUDFLARE_ACCOUNT_ID`
