@@ -72,3 +72,23 @@ actual dropzone and clicking "Compress all" (default: WebP, quality 80):
   AVIF output on a browser that supports AVIF encoding, PWA offline install,
   and the Cloudflare Pages workflow (needs your GitHub secrets — see README).
   These are code-complete but were not exercised end-to-end in this run.
+
+## 7. UX / flow update (2026-11-03, Exa-verified)
+
+- Stepper added: Upload → Adjust → Compress → Download, with number + label
+  (not colour alone) and an animated active indicator.
+- "How it works" section, clipboard-paste upload (Ctrl+V/Cmd+V), and a
+  "Try a sample image" button (`public/sample.png`) so the flow can be
+  tried with zero files.
+- Batch progress bar with aria-live "Compressing X of Y…", per-file
+  processing spinner, per-file Retry on failure (no dead end), and an
+  "All done!" summary banner with total original/compressed size and
+  a Download-all-as-ZIP action.
+- Animations via Motion 14.9.0 (`motion/react`, `MotionConfig
+  reducedMotion="user"`): hero/card entrance, staggered How-it-works
+  cards, dropzone scale on drag, dialog entrance, card layout/exit.
+  CSS focus-visible rings, 44px minimum touch targets, and a
+  `prefers-reduced-motion` rule that kills CSS motion.
+- Verified: `tsc` PASS, `npm run build` PASS, 12 screenshots retaken,
+  and a Playwright flow test (sample → Compress all → "All done!" banner
+  → ZIP button) PASS.

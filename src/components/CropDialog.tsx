@@ -1,3 +1,4 @@
+import { motion } from 'motion/react';
 import { useRef, useState } from 'react';
 import ReactCrop, { centerCrop, makeAspectCrop, type Crop, type PixelCrop } from 'react-image-crop';
 import { useTranslation } from 'react-i18next';
@@ -35,7 +36,7 @@ export default function CropDialog({ job, onClose }: { job: Job; onClose: () => 
 
   return (
     <div className="fixed inset-0 z-50 grid place-items-center bg-black/70 p-4" role="dialog" aria-modal="true">
-      <div className="card max-h-[90vh] w-full max-w-2xl overflow-auto p-4">
+      <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} className="card max-h-[90vh] w-full max-w-2xl overflow-auto p-4">
         <ReactCrop crop={crop} onChange={setCrop} onComplete={setCompleted}>
           <img ref={imgRef} src={job.previewUrl} alt={job.file.name} onLoad={onImageLoad} className="max-h-[60vh] w-full object-contain" />
         </ReactCrop>
@@ -43,7 +44,7 @@ export default function CropDialog({ job, onClose }: { job: Job; onClose: () => 
           <button className="btn-ghost" onClick={onClose}>{t('cancel')}</button>
           <button className="btn-primary" disabled={!completed} onClick={() => void apply()}>{t('applyCrop')}</button>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

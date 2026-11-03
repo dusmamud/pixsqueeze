@@ -24,6 +24,15 @@ Not every browser can encode WebP/AVIF. On load, a 2×2 canvas is run
 through `toBlob` for each format (`src/lib/formats.ts`) and only formats
 that really encode are offered. No silent fallback to another format.
 
+## User flow & animations
+
+Upload → Adjust → Compress → Download, shown as a stepper. Paste with
+Ctrl+V/Cmd+V, or press "Try a sample image" to try the flow with no files.
+Batch progress, per-file Retry on failure, and an "All done!" summary with
+total saved size. Animations use Motion (`motion/react`) with
+`MotionConfig reducedMotion="user"`, plus focus-visible rings and 44px
+touch targets.
+
 ## Run
 
 ```bash
