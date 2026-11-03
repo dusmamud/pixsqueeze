@@ -114,3 +114,15 @@ actual dropzone and clicking "Compress all" (default: WebP, quality 80):
   large grid cards, and a 6-card Features section.
 - Verified: `tsc` PASS, `npm run build` PASS, responsive screenshots at
   390/768/1440 with 0px overflow, flow test (sample → compress → done) PASS.
+
+## 9. Clean redesign (2026-11-03, after user feedback: no neon/futuristic/glow, tool must be in hero, header was cluttered)
+
+- Removed: dark neon theme, green/cyan gradient buttons, hero glow,
+  Space Grotesk, before/after showcase slider, Features grid, 2-pane
+  sidebar layout, header CTA and badge.
+- Now: light clean default (solid blue #2563eb, Inter only, flat
+  cards, grey borders), simple header (logo + Compressor/About/FAQ +
+  EN/HI + theme, no CTA), and the tool lives directly under the
+  headline in one card: dropzone + presets + settings + queue.
+- Verified: `tsc` PASS, `npm run build` PASS, flow test (sample →
+  compress → All done) PASS, overflow 0px at 390 / 768 / 1440.

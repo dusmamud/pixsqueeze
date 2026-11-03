@@ -15,7 +15,7 @@ export default function SettingsPanel() {
   ];
   const activePreset = presets.find((p) => p.format === s.format && p.quality === s.quality && p.max === s.maxWidthOrHeight);
   return (
-    <section className="card p-5">
+    <div>
       <h2 className="text-base font-bold">{t('settings')}</h2>
       <div className="mt-4 grid grid-cols-2 gap-2">
         {presets.map((p) => (
@@ -40,6 +40,6 @@ export default function SettingsPanel() {
         <input type="checkbox" checked={s.stripMetadata} onChange={(e) => s.setSettings({ stripMetadata: e.target.checked })} />
         {t('stripMetadata')}
       </label>
-    </section>
+    </div>
   );
 }
