@@ -19,10 +19,10 @@ input[type="range"] { accent-color: var(--accent); }
 input[type="number"], select { font-size: 16px; }
 @layer components {
   .card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; box-shadow: 0 1px 2px rgba(0,0,0,.25), 0 12px 32px rgba(0,0,0,.18); }
-  .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: var(--accent-text); font-weight: 700; border-radius: 999px; padding: 0.65rem 1.3rem; box-shadow: 0 8px 24px rgba(52,211,153,.28); transition: transform .15s ease, box-shadow .15s ease, filter .15s ease; }
+  .btn-primary { background: var(--accent); color: var(--accent-text); font-weight: 700; border-radius: 999px; padding: 0.65rem 1.3rem; box-shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 16px rgba(0,0,0,.25); transition: transform .15s ease, box-shadow .15s ease, filter .15s ease; }
   .btn-primary:hover { filter: brightness(1.08); transform: translateY(-1px); }
   .btn-primary:active { transform: translateY(0) scale(.98); }
-  .btn-primary:disabled { opacity: .5; box-shadow: none; transform: none; }
+  .btn-primary:disabled { opacity: .5; transform: none; }
   .btn-ghost { border: 1px solid var(--border); border-radius: 999px; padding: 0.65rem 1rem; transition: background .15s ease, transform .15s ease; }
   .btn-ghost:hover { background: var(--surface-2); }
   .field { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 0.6rem 0.8rem; width: 100%; color: var(--text); }
