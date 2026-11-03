@@ -1,7 +1,6 @@
 # ImgCompressor — Client-Side Image Compressor
 
-> Random placeholder name — rename it in `package.json`, `index.html`,
-> `vite.config.ts` (PWA manifest) and `src/locales/*.json` whenever you like.
+> Site name: ImgCompressor (formerly PixSqueeze, the placeholder name).
 
 100% browser image compression. No backend, no uploads, no account.
 Images are decoded, resized and re-encoded on the user's device.
