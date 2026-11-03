@@ -20,7 +20,7 @@ export default function Header() {
   const linkCls = ({ isActive }: { isActive: boolean }) =>
     `rounded-full px-3 py-1.5 text-sm font-medium ${isActive ? 'text-white' : 'muted'}`;
   return (
-    <header className="sticky top-0 z-40 -mx-4 px-4 backdrop-blur" style={{ background: 'color-mix(in srgb, var(--bg) 85%, transparent)', borderBottom: '1px solid var(--border)' }}>
+    <header className="sticky top-0 z-40 -mx-4 px-4 backdrop-blur" style={{ background: 'color-mix(in srgb, var(--bg) 85%, transparent)' }}>
       <div className="mx-auto flex h-16 max-w-7xl flex-nowrap items-center justify-between gap-3">
         <Link to="/" className="flex items-center gap-2.5">
           <span className="grid h-9 w-9 place-items-center rounded-xl" style={{ background: 'var(--accent)', color: 'var(--accent-text)' }}><ImageDown size={20} /></span>
