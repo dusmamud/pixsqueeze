@@ -92,3 +92,25 @@ actual dropzone and clicking "Compress all" (default: WebP, quality 80):
 - Verified: `tsc` PASS, `npm run build` PASS, 12 screenshots retaken,
   and a Playwright flow test (sample → Compress all → "All done!" banner
   → ZIP button) PASS.
+
+## 8. Professional redesign (2026-11-03, after user feedback "not professional / not responsive")
+
+- Root cause found by measurement, not guesswork: horizontal overflow was
+  102px on mobile (390px) and 144px on tablet (768px), 0px on desktop.
+  Cause: custom unlayered CSS (`display: inline-flex` on `.btn-primary`)
+  was beating Tailwind's `hidden` utility, so the header CTA stayed
+  visible on mobile and the header overflowed. Fix: component classes
+  moved into Tailwind's `@layer components`, the stray unlayered
+  `display` rule removed, nav/CTA breakpoints moved to `lg`, header
+  made wrapping. After the fix: overflow = 0px at 390 / 768 / 1440.
+- Design system: dark-first theme (light toggle kept), Space Grotesk
+  headings + Inter body, gradient primary buttons, card shadows, wider
+  7xl shell, hero glow.
+- Layout: hero is now text + a real before/after compare demo
+  (190 KB → 82 KB WebP, 57% saved); the tool is a 2-pane app on desktop
+  (sticky settings sidebar + queue) and stacked on mobile/tablet.
+- Flow: settings presets (Web / Smallest / Photo / Lossless), sticky
+  batch bar, job rows (thumbnail + sizes + status + actions) instead of
+  large grid cards, and a 6-card Features section.
+- Verified: `tsc` PASS, `npm run build` PASS, responsive screenshots at
+  390/768/1440 with 0px overflow, flow test (sample → compress → done) PASS.
