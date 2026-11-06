@@ -14,16 +14,16 @@ export default function ImageCard({ job, onRetry }: { job: Job; onRetry?: (job: 
   const [showCompare, setShowCompare] = useState(false);
   const [showCrop, setShowCrop] = useState(false);
   const saved = job.resultSize !== undefined ? savedPercent(job.file.size, job.resultSize) : 0;
-  const statusText = job.status === 'processing' ? t('processing') : job.status === 'done' ? `✓ ${t('done')} · ${saved >= 0 ? `${saved}% ${t('saved')}` : `${-saved}% larger`}` : job.status === 'failed' ? t('failed') : t('waiting');
+  const statusText = job.status === 'processing' ? t('processing') : job.status === 'done' ? `${t('done')} · ${saved >= 0 ? `${saved}% ${t('saved')}` : `${-saved}% larger`}` : job.status === 'failed' ? t('failed') : t('waiting');
   return (
-    <motion.article layout initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.98 }} transition={{ duration: 0.25 }} className="card overflow-hidden p-3 sm:p-4">
+    <motion.article initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="card overflow-hidden p-3 sm:p-4">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-        <div className="h-44 w-full shrink-0 overflow-hidden rounded-xl sm:h-28 sm:w-44" style={{ background: 'var(--surface-2)' }}>
+        <div className="h-44 w-full shrink-0 overflow-hidden rounded-lg sm:h-28 sm:w-44" style={{ background: 'var(--surface-2)' }}>
           <img src={job.resultUrl || job.previewUrl} alt={job.file.name} className="h-full w-full object-cover" />
         </div>
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-semibold" title={job.file.name}>{job.file.name}</p>
-          <p className="muted mt-1 text-xs">{t('original')}: {fb(job.file.size)}{job.resultSize !== undefined ? ` → ${t('compressed')}: ${fb(job.resultSize)}` : ''}</p>
+          <p className="mono muted mt-1 text-xs">{t('original')}: {fb(job.file.size)}{job.resultSize !== undefined ? ` → ${t('compressed')}: ${fb(job.resultSize)}` : ''}</p>
           <p className="mt-1.5 text-xs font-medium">{statusText}</p>
           {job.exifNote && <p className="muted mt-1 text-xs">EXIF: {job.exifNote}</p>}
           {job.status === 'processing' && <span className="mt-2 flex items-center gap-2 text-sm"><Loader2 className="animate-spin" size={16} />{t('processing')}</span>}
@@ -40,7 +40,7 @@ export default function ImageCard({ job, onRetry }: { job: Job; onRetry?: (job: 
       </div>
       {showCrop && <CropDialog job={job} onClose={() => setShowCrop(false)} />}
       {showCompare && job.resultUrl && (
-        <div className="mt-4 overflow-hidden rounded-xl">
+        <div className="mt-4 overflow-hidden rounded-lg">
           <ReactCompareSlider itemOne={<ReactCompareSliderImage src={job.previewUrl} alt="Original" />} itemTwo={<ReactCompareSliderImage src={job.resultUrl} alt="Compressed" />} />
         </div>
       )}

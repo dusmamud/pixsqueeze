@@ -28,13 +28,13 @@ export default function Header() {
   };
   const changeLng = (lng: string) => { void i18n.changeLanguage(lng); localStorage.setItem('imgcompressor-lng', lng); };
   const linkCls = ({ isActive }: { isActive: boolean }) =>
-    `rounded-full px-3 py-1.5 text-sm font-medium ${isActive ? 'text-white' : 'muted'}`;
+    `rounded-lg px-3 py-1.5 text-sm font-medium ${isActive ? 'text-white' : 'muted'}`;
   return (
     <header className="sticky top-0 z-40 -mx-4 px-4 backdrop-blur" style={{ background: 'color-mix(in srgb, var(--bg) 85%, transparent)' }}>
       <div className="mx-auto flex h-16 max-w-7xl flex-nowrap items-center justify-between gap-3">
         <Link to="/" className="flex items-center gap-2.5">
           <span className="grid h-9 w-9 place-items-center rounded-xl" style={{ background: 'var(--accent)', color: 'var(--accent-text)' }}><ImageDown size={20} /></span>
-          <span className="truncate text-base font-extrabold">{t('brand')}</span>
+          <span className="truncate text-base font-semibold">{t('brand')}</span>
         </Link>
         <nav className="hidden items-center gap-1 lg:flex" aria-label="Main">
           {LINKS.map((l) => <NavLink key={l.to} to={l.to} style={({ isActive }) => (isActive ? { background: 'var(--accent)', color: 'var(--accent-text)' } : undefined)} className={linkCls}>{t(l.key)}</NavLink>)}
@@ -46,7 +46,7 @@ export default function Header() {
             ))}
           </div>
           <button aria-label="Toggle theme" className="card p-2" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>{theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}</button>
-          <a href="/#tool" onClick={goToTool} className="hidden h-9 items-center justify-center rounded-xl px-4 text-sm font-bold transition hover:brightness-110 xl:inline-flex" style={{ background: 'var(--accent)', color: 'var(--accent-text)', boxShadow: '0 1px 2px rgba(0,0,0,.3), 0 6px 16px rgba(0,0,0,.25)' }}>{t('startCompressing')}</a>
+          <a href="/#tool" onClick={goToTool} className="hidden h-9 items-center justify-center rounded-[10px] px-4 text-sm font-semibold transition hover:brightness-110 xl:inline-flex" style={{ background: 'var(--accent)', color: 'var(--accent-text)', boxShadow: '0 1px 2px rgba(0,0,0,.3), 0 6px 16px rgba(0,0,0,.25)' }}>{t('startCompressing')}</a>
           <button aria-label="Menu" className="card p-2 lg:hidden" onClick={() => setOpen(!open)}>{open ? <X size={18} /> : <Menu size={18} />}</button>
         </div>
       </div>

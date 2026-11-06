@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 import { ReactCompareSlider, ReactCompareSliderImage } from 'react-compare-slider';
-import { ShieldCheck, Zap, Layers, SlidersHorizontal, ImageDown, WifiOff, CheckCircle2, Loader2 } from 'lucide-react';
+import { ShieldCheck, Zap, Layers, SlidersHorizontal, ImageDown, WifiOff, CheckCircle2, Loader2, Lock, Check } from 'lucide-react';
 import DropzoneArea from '../components/DropzoneArea';
 import SettingsPanel from '../components/SettingsPanel';
 import ImageCard from '../components/ImageCard';
@@ -81,29 +81,29 @@ export default function HomePage() {
   return (
     <div>
       {/* Hero: text + live before/after demo, not a bare headline. */}
-      <section className="hero-glow relative overflow-hidden rounded-3xl px-4 py-10 sm:px-8 sm:py-14 lg:px-12">
+      <section className="px-4 py-12 sm:px-8">
         <div className="grid items-center gap-10 lg:grid-cols-2">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
-            <span className="card inline-flex !rounded-full px-3 py-1.5 text-xs font-semibold">🔒 {t('heroBadge')}</span>
-            <h1 className="mt-5 text-4xl font-bold leading-[1.05] sm:text-5xl lg:text-6xl">{t('heroTitle')}</h1>
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
+            <p className="muted mono flex items-center gap-2 text-xs font-medium"><Lock size={14} />{t('heroBadge')}</p>
+            <h1 className="mt-5 text-4xl font-medium leading-[1.05] sm:text-5xl lg:text-6xl">{t('heroTitle')}</h1>
             <p className="muted mt-4 max-w-lg text-base sm:text-lg">{t('heroSub')}</p>
             <div className="mt-6 flex flex-wrap gap-3">
               <a href="#tool" className="btn-primary">{t('startCompressing')}</a>
               <button className="btn-ghost" onClick={() => void trySample()}>{t('trySample')}</button>
             </div>
             <div className="mt-8 grid max-w-md grid-cols-2 gap-4 sm:grid-cols-4">
-              <div><p className="text-xl font-bold">0</p><p className="muted text-xs">{t('statUploads')}</p></div>
-              <div><p className="text-xl font-bold">4</p><p className="muted text-xs">{t('statFormats')}</p></div>
-              <div><p className="text-xl font-bold">2</p><p className="muted text-xs">{t('statLanguages')}</p></div>
-              <div><p className="text-xl font-bold">✓</p><p className="muted text-xs">{t('statOffline')}</p></div>
+              <div><p className="mono text-xl font-medium">0</p><p className="muted text-xs">{t('statUploads')}</p></div>
+              <div><p className="mono text-xl font-medium">4</p><p className="muted text-xs">{t('statFormats')}</p></div>
+              <div><p className="mono text-xl font-medium">2</p><p className="muted text-xs">{t('statLanguages')}</p></div>
+              <div><p className="text-xl font-medium"><Check size={20} /></p><p className="muted text-xs">{t('statOffline')}</p></div>
             </div>
           </motion.div>
-          <motion.div initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5, delay: 0.1 }} className="card overflow-hidden p-3">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3, delay: 0.1 }} className="card overflow-hidden p-3">
             <ReactCompareSlider
               itemOne={<ReactCompareSliderImage src="/sample.png" alt={t('demoOriginal')} />}
               itemTwo={<ReactCompareSliderImage src="/sample-compressed.webp" alt={t('demoCompressed')} />}
             />
-            <div className="flex flex-wrap items-center justify-between gap-2 px-2 pb-1 pt-3 text-xs">
+            <div className="mono flex flex-wrap items-center justify-between gap-2 px-2 pb-1 pt-3 text-xs">
               <span><b>{t('demoOriginal')}</b>: 190 KB</span>
               <span><b>{t('demoCompressed')}</b>: 82 KB · 57% {t('saved')}</span>
             </div>
@@ -112,10 +112,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      <div className="mt-10"><Stepper /></div>
+      <div className="mt-12"><Stepper /></div>
 
       {/* Tool: sidebar settings on desktop, stacked on mobile/tablet. */}
-      <section id="tool" className="mt-10 scroll-mt-24">
+      <section id="tool" className="mt-12 scroll-mt-24">
         <div className="grid items-start gap-5 lg:grid-cols-[340px_minmax(0,1fr)]">
           <div className="lg:sticky lg:top-24"><SettingsPanel /></div>
           <div className="min-w-0 space-y-4">
@@ -124,13 +124,13 @@ export default function HomePage() {
               <div aria-live="polite" className="card p-4">
                 <p className="text-sm font-medium">{t('compressingCount')} {batchDone} {t('of')} {batchTotal}…</p>
                 <div className="mt-2 h-2 overflow-hidden rounded-full" style={{ background: 'var(--surface-2)' }}>
-                  <motion.div className="h-full rounded-full" style={{ background: 'var(--accent)' }} animate={{ width: batchTotal ? `${(batchDone / batchTotal) * 100}%` : '0%' }} transition={{ duration: 0.3 }} />
+                  <div className="h-full rounded-full" style={{ background: 'var(--accent)', transform: `scaleX(${batchTotal ? batchDone / batchTotal : 0})`, transformOrigin: 'left', transition: 'transform 0.3s cubic-bezier(0.22, 1, 0.36, 1)' }} />
                 </div>
               </div>
             )}
             <AnimatePresence>
               {summary && !batchRunning && (
-                <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="card flex flex-wrap items-center justify-between gap-3 p-4">
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="card flex flex-wrap items-center justify-between gap-3 p-4">
                   <p className="flex items-center gap-2 text-sm font-semibold"><CheckCircle2 style={{ color: 'var(--accent)' }} /> {t('batchDone')} {summary.count} images · {t('totalOriginal')}: {formatBytes(summary.original)} → {t('totalCompressed')}: {formatBytes(summary.compressed)} · {savedPct}% {t('saved')}</p>
                   <button className="btn-primary text-sm" onClick={() => void downloadAllZip()}>{t('downloadAll')}</button>
                 </motion.div>
@@ -167,15 +167,15 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="mt-16">
-        <h2 className="text-2xl font-bold sm:text-3xl">{t('featuresTitle')}</h2>
+      <section className="mt-12">
+        <h2 className="text-2xl font-medium sm:text-3xl">{t('featuresTitle')}</h2>
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {FEATURES.map((f, i) => (
-            <motion.div key={f.title} initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-40px' }} transition={{ duration: 0.35, delay: i * 0.05 }} className="card p-5">
-              <f.icon size={22} style={{ color: 'var(--accent)' }} />
-              <h3 className="mt-3 font-semibold">{t(f.title)}</h3>
+          {FEATURES.map((f) => (
+            <div key={f.title} className="card p-5">
+              <f.icon size={18} className="muted" />
+              <h3 className="mt-3 font-medium">{t(f.title)}</h3>
               <p className="muted mt-1 text-sm leading-relaxed">{t(f.text)}</p>
-            </motion.div>
+            </div>
           ))}
         </div>
       </section>

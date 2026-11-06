@@ -1,5 +1,4 @@
-import { motion } from 'motion/react';
-import { UploadCloud, SlidersHorizontal, Zap, Download } from 'lucide-react';
+import { UploadCloud, SlidersHorizontal, Zap, Download, Check } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useCompressorStore } from '../store/useCompressorStore';
 
@@ -22,9 +21,9 @@ export default function Stepper() {
         const active = i === current;
         return (
           <div key={key} className="flex flex-1 flex-col items-center gap-1.5 text-center">
-            <span className="relative grid h-10 w-10 place-items-center rounded-full text-sm font-bold" style={{ background: done || active ? 'var(--accent)' : 'var(--surface-2)', color: done || active ? 'var(--accent-text)' : 'var(--muted)', border: '1px solid var(--border)' }}>
-              {active && <motion.span layoutId="step-pill" className="absolute inset-0 rounded-full" style={{ border: '2px solid var(--accent)' }} />}
-              {done ? '✓' : <Icon size={18} />}
+            <span className="relative grid h-10 w-10 place-items-center rounded-full text-sm font-medium" style={{ background: done || active ? 'var(--accent)' : 'var(--surface-2)', color: done || active ? 'var(--accent-text)' : 'var(--muted)', border: '1px solid var(--border)' }}>
+              {active && <span className="absolute inset-0 rounded-full" style={{ border: '2px solid var(--accent)' }} />}
+              {done ? <Check size={18} /> : <Icon size={18} />}
             </span>
             <span className={`text-xs font-medium ${active ? '' : 'muted'}`}>{i + 1}. {t(key)}</span>
           </div>

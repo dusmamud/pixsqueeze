@@ -4,7 +4,7 @@ export function Prose({ titleKey, paras }: { titleKey: string; paras: string[] }
   const { t } = useTranslation();
   return (
     <article className="mx-auto max-w-3xl py-10">
-      <h1 className="text-3xl font-extrabold sm:text-4xl">{t(titleKey)}</h1>
+      <h1 className="text-3xl font-medium sm:text-4xl">{t(titleKey)}</h1>
       {paras.map((k, i) => <p key={i} className="muted mt-5 leading-relaxed">{t(k)}</p>)}
     </article>
   );
@@ -17,7 +17,7 @@ export function FaqPage() {
   const items = [['faqQ1', 'faqA1'], ['faqQ2', 'faqA2'], ['faqQ3', 'faqA3'], ['faqQ4', 'faqA4']] as const;
   return (
     <article className="mx-auto max-w-3xl py-10">
-      <h1 className="text-3xl font-extrabold sm:text-4xl">{t('faqTitle')}</h1>
+      <h1 className="text-3xl font-medium sm:text-4xl">{t('faqTitle')}</h1>
       <div className="mt-6 space-y-4">
         {items.map(([q, a]) => (
           <section key={q} className="card p-5">
