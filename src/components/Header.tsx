@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Moon, Sun, ImageDown, Menu, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useCompressorStore } from '../store/useCompressorStore';
@@ -16,6 +16,16 @@ export default function Header() {
   const { t, i18n } = useTranslation();
   const { theme, setTheme } = useCompressorStore();
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  // Header CTA must actually scroll to the tool: React Router's Link to
+  // "/#tool" only changes the hash and never scrolls, on home or from
+  // another page. Scroll explicitly after navigating home if needed.
+  const goToTool = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const scroll = () => document.getElementById('tool')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (location.pathname !== '/') { navigate('/'); window.setTimeout(scroll, 200); } else { scroll(); }
+  };
   const changeLng = (lng: string) => { void i18n.changeLanguage(lng); localStorage.setItem('imgcompressor-lng', lng); };
   const linkCls = ({ isActive }: { isActive: boolean }) =>
     `rounded-full px-3 py-1.5 text-sm font-medium ${isActive ? 'text-white' : 'muted'}`;
@@ -36,7 +46,7 @@ export default function Header() {
             ))}
           </div>
           <button aria-label="Toggle theme" className="card p-2" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>{theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}</button>
-          <Link to="/#tool" className="btn-primary hidden !px-4 !py-2 text-sm xl:inline-flex">{t('startCompressing')}</Link>
+          <a href="/#tool" onClick={goToTool} className="hidden h-9 items-center justify-center rounded-xl px-4 text-sm font-bold transition hover:brightness-110 xl:inline-flex" style={{ background: 'var(--accent)', color: 'var(--accent-text)', boxShadow: '0 1px 2px rgba(0,0,0,.3), 0 6px 16px rgba(0,0,0,.25)' }}>{t('startCompressing')}</a>
           <button aria-label="Menu" className="card p-2 lg:hidden" onClick={() => setOpen(!open)}>{open ? <X size={18} /> : <Menu size={18} />}</button>
         </div>
       </div>
