@@ -12,9 +12,9 @@ export default function DropzoneArea() {
   });
   return (
     <div>
-      <div {...getRootProps()} className="card cursor-pointer border-dashed p-8 text-center" style={{ borderStyle: 'dashed', borderWidth: 2, borderColor: isDragActive ? 'var(--accent)' : undefined }}>
+      <div {...getRootProps({ role: 'button', 'aria-label': t('dropTitle') })} className="card cursor-pointer border-dashed p-8 text-center" style={{ borderStyle: 'dashed', borderWidth: 2, borderColor: isDragActive ? 'var(--accent)' : undefined }}>
         <input {...getInputProps()} />
-        <UploadCloud className="muted mx-auto mb-3" size={24} />
+        <UploadCloud className="muted mx-auto mb-3" size={24} aria-hidden="true" />
         <p className="text-lg font-medium">{t('dropTitle')}</p>
         <p className="muted mt-1 text-sm">{t('dropSub')}</p>
         <p className="muted mt-1 text-xs">{t('pasteHint')}</p>

@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ReactCrop, { centerCrop, makeAspectCrop, type Crop, type PixelCrop } from 'react-image-crop';
 import { useTranslation } from 'react-i18next';
 import type { Job } from '../store/useCompressorStore';
@@ -9,8 +9,17 @@ export default function CropDialog({ job, onClose }: { job: Job; onClose: () => 
   const { t } = useTranslation();
   const updateJob = useCompressorStore((s) => s.updateJob);
   const imgRef = useRef<HTMLImageElement>(null);
+  const cancelRef = useRef<HTMLButtonElement>(null);
   const [crop, setCrop] = useState<Crop>();
   const [completed, setCompleted] = useState<PixelCrop>();
+
+  // Escape closes the dialog; focus starts on Cancel so keyboard users land inside it.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    cancelRef.current?.focus();
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
 
   const onImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
     const { width, height } = e.currentTarget;
@@ -35,13 +44,13 @@ export default function CropDialog({ job, onClose }: { job: Job; onClose: () => 
   };
 
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-black/70 p-4" role="dialog" aria-modal="true">
-      <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} className="card max-h-[90vh] w-full max-w-2xl overflow-auto p-4">
+    <div className="fixed inset-0 z-50 grid place-items-center bg-black/70 p-4" role="dialog" aria-modal="true" aria-label={t('crop')} onClick={onClose}>
+      <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} className="card max-h-[90vh] w-full max-w-2xl overflow-auto p-4" onClick={(e) => e.stopPropagation()}>
         <ReactCrop crop={crop} onChange={setCrop} onComplete={setCompleted}>
           <img ref={imgRef} src={job.previewUrl} alt={job.file.name} onLoad={onImageLoad} className="max-h-[60vh] w-full object-contain" />
         </ReactCrop>
         <div className="mt-4 flex justify-end gap-2">
-          <button className="btn-ghost" onClick={onClose}>{t('cancel')}</button>
+          <button ref={cancelRef} className="btn-ghost" onClick={onClose}>{t('cancel')}</button>
           <button className="btn-primary" disabled={!completed} onClick={() => void apply()}>{t('applyCrop')}</button>
         </div>
       </motion.div>

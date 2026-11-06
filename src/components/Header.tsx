@@ -30,10 +30,12 @@ export default function Header() {
   const linkCls = ({ isActive }: { isActive: boolean }) =>
     `rounded-lg px-3 py-1.5 text-sm font-medium ${isActive ? 'text-white' : 'muted'}`;
   return (
-    <header className="sticky top-0 z-40 -mx-4 px-4 backdrop-blur" style={{ background: 'color-mix(in srgb, var(--bg) 85%, transparent)' }}>
+    <>
+      <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:rounded-lg focus:px-4 focus:py-2 focus:text-sm focus:font-semibold" style={{ background: 'var(--accent)', color: 'var(--accent-text)' }}>{t('skipToContent')}</a>
+      <header className="sticky top-0 z-40 -mx-4 px-4 backdrop-blur" style={{ background: 'color-mix(in srgb, var(--bg) 85%, transparent)' }}>
       <div className="mx-auto flex h-16 max-w-7xl flex-nowrap items-center justify-between gap-3">
         <Link to="/" className="flex items-center gap-2.5">
-          <span className="grid h-9 w-9 place-items-center rounded-xl" style={{ background: 'var(--accent)', color: 'var(--accent-text)' }}><ImageDown size={20} /></span>
+          <span className="grid h-9 w-9 place-items-center rounded-xl" style={{ background: 'var(--accent)', color: 'var(--accent-text)' }}><ImageDown size={20} aria-hidden="true" /></span>
           <span className="truncate text-base font-semibold">{t('brand')}</span>
         </Link>
         <nav className="hidden items-center gap-1 lg:flex" aria-label="Main">
@@ -42,19 +44,20 @@ export default function Header() {
         <div className="flex items-center gap-2">
           <div className="card flex p-1 text-xs font-semibold">
             {(['en', 'hi'] as const).map((lng) => (
-              <button key={lng} onClick={() => changeLng(lng)} className="rounded-lg px-1.5 py-1 sm:px-2" style={i18n.language === lng ? { background: 'var(--accent)', color: 'var(--accent-text)' } : undefined}>{lng.toUpperCase()}</button>
+              <button key={lng} aria-pressed={i18n.language === lng} aria-label={lng === 'en' ? 'English' : 'हिन्दी'} onClick={() => changeLng(lng)} className="rounded-lg px-1.5 py-1 sm:px-2" style={i18n.language === lng ? { background: 'var(--accent)', color: 'var(--accent-text)' } : undefined}>{lng.toUpperCase()}</button>
             ))}
           </div>
-          <button aria-label="Toggle theme" className="card p-2" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>{theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}</button>
+          <button aria-label={theme === 'dark' ? t('switchToLight') : t('switchToDark')} className="card p-2" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>{theme === 'dark' ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}</button>
           <a href="/#tool" onClick={goToTool} className="hidden h-9 items-center justify-center rounded-[10px] px-4 text-sm font-semibold transition hover:brightness-110 xl:inline-flex" style={{ background: 'var(--accent)', color: 'var(--accent-text)', boxShadow: '0 1px 2px rgba(0,0,0,.3), 0 6px 16px rgba(0,0,0,.25)' }}>{t('startCompressing')}</a>
-          <button aria-label="Menu" className="card p-2 lg:hidden" onClick={() => setOpen(!open)}>{open ? <X size={18} /> : <Menu size={18} />}</button>
+          <button aria-label="Menu" aria-expanded={open} aria-controls="mobile-nav" className="card p-2 lg:hidden" onClick={() => setOpen(!open)}>{open ? <X size={18} aria-hidden="true" /> : <Menu size={18} aria-hidden="true" />}</button>
         </div>
       </div>
       {open && (
-        <nav className="mx-auto mt-3 grid max-w-7xl gap-1 pb-2 lg:hidden" aria-label="Mobile">
+        <nav id="mobile-nav" className="mx-auto mt-3 grid max-w-7xl gap-1 pb-2 lg:hidden" aria-label="Mobile">
           {LINKS.map((l) => <NavLink key={l.to} to={l.to} onClick={() => setOpen(false)} className="rounded-lg px-3 py-2 text-sm font-medium" style={({ isActive }) => (isActive ? { background: 'var(--surface-2)' } : undefined)}>{t(l.key)}</NavLink>)}
         </nav>
       )}
-    </header>
+      </header>
+    </>
   );
 }

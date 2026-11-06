@@ -24,24 +24,24 @@ export default function ImageCard({ job, onRetry }: { job: Job; onRetry?: (job: 
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-semibold" title={job.file.name}>{job.file.name}</p>
           <p className="mono muted mt-1 text-xs">{t('original')}: {fb(job.file.size)}{job.resultSize !== undefined ? ` → ${t('compressed')}: ${fb(job.resultSize)}` : ''}</p>
-          <p className="mt-1.5 text-xs font-medium">{statusText}</p>
+          <p className="mt-1.5 text-xs font-medium" aria-live="polite">{statusText}</p>
           {job.exifNote && <p className="muted mt-1 text-xs">EXIF: {job.exifNote}</p>}
-          {job.status === 'processing' && <span className="mt-2 flex items-center gap-2 text-sm"><Loader2 className="animate-spin" size={16} />{t('processing')}</span>}
+          {job.status === 'processing' && <span className="mt-2 flex items-center gap-2 text-sm"><Loader2 className="animate-spin" size={16} aria-hidden="true" />{t('processing')}</span>}
         </div>
         <div className="flex flex-wrap gap-2 sm:flex-col sm:items-end">
-          {job.resultUrl && job.resultName && <a className="btn-primary text-sm" href={job.resultUrl} download={job.resultName}><Download size={15} className="mr-1 inline" />{t('download')}</a>}
+          {job.resultUrl && job.resultName && <a className="btn-primary text-sm" href={job.resultUrl} download={job.resultName}><Download size={15} className="mr-1 inline" aria-hidden="true" />{t('download')}</a>}
           <div className="flex gap-2">
-            <button className="btn-ghost !min-h-0 !px-3 !py-2 text-sm" onClick={() => setShowCrop(true)}><CropIcon size={15} className="mr-1 inline" />{t('crop')}</button>
-            {job.resultUrl && <button className="btn-ghost !min-h-0 !px-3 !py-2 text-sm" onClick={() => setShowCompare(!showCompare)}><Columns2 size={15} className="mr-1 inline" />{t('compare')}</button>}
-            {job.status === 'failed' && onRetry && <button className="btn-primary !min-h-0 !px-3 !py-2 text-sm" onClick={() => onRetry(job)}><RotateCcw size={15} className="mr-1 inline" />{t('retry')}</button>}
-            <button aria-label={t('remove')} className="btn-ghost !min-h-0 !px-3 !py-2" onClick={() => removeJob(job.id)}><X size={16} /></button>
+            <button className="btn-ghost !min-h-0 !px-3 !py-2 text-sm" onClick={() => setShowCrop(true)}><CropIcon size={15} className="mr-1 inline" aria-hidden="true" />{t('crop')}</button>
+            {job.resultUrl && <button className="btn-ghost !min-h-0 !px-3 !py-2 text-sm" aria-pressed={showCompare} onClick={() => setShowCompare(!showCompare)}><Columns2 size={15} className="mr-1 inline" aria-hidden="true" />{t('compare')}</button>}
+            {job.status === 'failed' && onRetry && <button className="btn-primary !min-h-0 !px-3 !py-2 text-sm" onClick={() => onRetry(job)}><RotateCcw size={15} className="mr-1 inline" aria-hidden="true" />{t('retry')}</button>}
+            <button aria-label={t('remove')} className="btn-ghost !min-h-0 !px-3 !py-2" onClick={() => removeJob(job.id)}><X size={16} aria-hidden="true" /></button>
           </div>
         </div>
       </div>
       {showCrop && <CropDialog job={job} onClose={() => setShowCrop(false)} />}
       {showCompare && job.resultUrl && (
         <div className="mt-4 overflow-hidden rounded-lg">
-          <ReactCompareSlider itemOne={<ReactCompareSliderImage src={job.previewUrl} alt="Original" />} itemTwo={<ReactCompareSliderImage src={job.resultUrl} alt="Compressed" />} />
+          <ReactCompareSlider itemOne={<ReactCompareSliderImage src={job.previewUrl} alt={t('demoOriginal')} />} itemTwo={<ReactCompareSliderImage src={job.resultUrl} alt={t('demoCompressed')} />} />
         </div>
       )}
     </motion.article>

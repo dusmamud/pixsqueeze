@@ -9,9 +9,9 @@ export default function Footer() {
     <footer className="mt-12" style={{ borderTop: '1px solid var(--border)' }}>
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:grid-cols-2 lg:grid-cols-4">
         <div>
-          <div className="flex items-center gap-2"><span className="grid h-8 w-8 place-items-center rounded-lg" style={{ background: 'var(--accent)', color: 'var(--accent-text)' }}><ImageDown size={17} /></span><span className="font-semibold">{t('brand')}</span></div>
+          <div className="flex items-center gap-2"><span className="grid h-8 w-8 place-items-center rounded-lg" style={{ background: 'var(--accent)', color: 'var(--accent-text)' }}><ImageDown size={17} aria-hidden="true" /></span><span className="font-semibold">{t('brand')}</span></div>
           <p className="muted mt-3 text-sm">{t('footerNote')}</p>
-          <p className="muted mt-2 flex items-center gap-1.5 text-xs"><Lock size={12} />{t('privacyBadge')}</p>
+          <p className="muted mt-2 flex items-center gap-1.5 text-xs"><Lock size={12} aria-hidden="true" />{t('privacyBadge')}</p>
         </div>
         <nav aria-label="Product"><p className="mb-3 text-sm font-semibold">{t('footerProduct')}</p><ul className="muted space-y-2 text-sm"><li><Link to="/">{t('navHome')}</Link></li><li><Link to="/about">{t('navAbout')}</Link></li><li><Link to="/faq">{t('navFaq')}</Link></li></ul></nav>
         <nav aria-label="Legal"><p className="mb-3 text-sm font-semibold">{t('footerLegal')}</p><ul className="muted space-y-2 text-sm"><li><Link to="/privacy">{t('navPrivacy')}</Link></li><li><Link to="/terms">{t('navTerms')}</Link></li></ul></nav>

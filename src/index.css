@@ -32,6 +32,13 @@ input[type="number"], select { font-size: 16px; }
 }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 button, a { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+/* Pointer: every clickable control shows the hand cursor, not the arrow.
+   (Tailwind v4 leaves buttons/selects on the default cursor.) */
+button, a[href], summary, select, input[type='checkbox'], input[type='range'], [role='button'], label { cursor: pointer; }
+button:disabled, input:disabled, select:disabled { cursor: not-allowed; }
+input[type='text'], input[type='number'], input[type='email'], input[type='url'], textarea { cursor: text; }
+/* Before/after compare: the handle drags left-right. */
+.react-compare-slider { cursor: ew-resize; }
 .btn-primary, .btn-ghost { min-height: 44px; }  /* display comes from the component layer, so Tailwind `hidden` still wins */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }

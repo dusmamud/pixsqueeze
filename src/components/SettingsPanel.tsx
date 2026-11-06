@@ -19,7 +19,7 @@ export default function SettingsPanel() {
       <h2 className="text-base font-medium">{t('settings')}</h2>
       <div className="mt-4 grid grid-cols-2 gap-2">
         {presets.map((p) => (
-          <button key={p.key} onClick={() => s.setSettings({ format: p.format, quality: p.quality, maxWidthOrHeight: p.max })} className="rounded-[10px] px-3 py-2.5 text-sm font-medium transition" style={activePreset?.key === p.key ? { background: 'var(--accent)', color: 'var(--accent-text)' } : { background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+          <button key={p.key} aria-pressed={activePreset?.key === p.key} onClick={() => s.setSettings({ format: p.format, quality: p.quality, maxWidthOrHeight: p.max })} className="rounded-[10px] px-3 py-2.5 text-sm font-medium transition" style={activePreset?.key === p.key ? { background: 'var(--accent)', color: 'var(--accent-text)' } : { background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
             {t(p.key)}
           </button>
         ))}

@@ -110,5 +110,8 @@
   "feat6Title": "Offline chalta hai",
   "feat6Text": "Ek baar load hone ke baad app installable hai aur bina internet ke chalta hai.",
   "jobsCount": "images",
-  "selected": "chuni gayi"
+  "selected": "chuni gayi",
+  "skipToContent": "Mukhya content par jayein",
+  "switchToLight": "Halki theme par badlein",
+  "switchToDark": "Gehri theme par badlein"
 }

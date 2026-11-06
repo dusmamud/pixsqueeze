@@ -110,5 +110,8 @@
   "feat6Title": "Works offline",
   "feat6Text": "Once loaded, the app is installable and works without internet. Your files were never online anyway.",
   "jobsCount": "images",
-  "selected": "selected"
+  "selected": "selected",
+  "skipToContent": "Skip to main content",
+  "switchToLight": "Switch to light theme",
+  "switchToDark": "Switch to dark theme"
 }

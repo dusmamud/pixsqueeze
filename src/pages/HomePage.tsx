@@ -84,7 +84,7 @@ export default function HomePage() {
       <section className="px-4 py-12 sm:px-8">
         <div className="grid items-center gap-10 lg:grid-cols-2">
           <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-            <p className="muted mono flex items-center gap-2 text-xs font-medium"><Lock size={14} />{t('heroBadge')}</p>
+            <p className="muted mono flex items-center gap-2 text-xs font-medium"><Lock size={14} aria-hidden="true" />{t('heroBadge')}</p>
             <h1 className="mt-5 text-4xl font-medium leading-[1.05] sm:text-5xl lg:text-6xl">{t('heroTitle')}</h1>
             <p className="muted mt-4 max-w-lg text-base sm:text-lg">{t('heroSub')}</p>
             <div className="mt-6 flex flex-wrap gap-3">
@@ -95,7 +95,7 @@ export default function HomePage() {
               <div><p className="mono text-xl font-medium">0</p><p className="muted text-xs">{t('statUploads')}</p></div>
               <div><p className="mono text-xl font-medium">4</p><p className="muted text-xs">{t('statFormats')}</p></div>
               <div><p className="mono text-xl font-medium">2</p><p className="muted text-xs">{t('statLanguages')}</p></div>
-              <div><p className="text-xl font-medium"><Check size={20} /></p><p className="muted text-xs">{t('statOffline')}</p></div>
+              <div><p className="text-xl font-medium"><Check size={20} aria-hidden="true" /></p><p className="muted text-xs">{t('statOffline')}</p></div>
             </div>
           </motion.div>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3, delay: 0.1 }} className="card overflow-hidden p-3">
@@ -123,15 +123,15 @@ export default function HomePage() {
             {batchRunning && (
               <div aria-live="polite" className="card p-4">
                 <p className="text-sm font-medium">{t('compressingCount')} {batchDone} {t('of')} {batchTotal}…</p>
-                <div className="mt-2 h-2 overflow-hidden rounded-full" style={{ background: 'var(--surface-2)' }}>
+                <div role="progressbar" aria-valuenow={batchDone} aria-valuemin={0} aria-valuemax={batchTotal} aria-label={t('compressingCount')} className="mt-2 h-2 overflow-hidden rounded-full" style={{ background: 'var(--surface-2)' }}>
                   <div className="h-full rounded-full" style={{ background: 'var(--accent)', transform: `scaleX(${batchTotal ? batchDone / batchTotal : 0})`, transformOrigin: 'left', transition: 'transform 0.3s cubic-bezier(0.22, 1, 0.36, 1)' }} />
                 </div>
               </div>
             )}
             <AnimatePresence>
               {summary && !batchRunning && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="card flex flex-wrap items-center justify-between gap-3 p-4">
-                  <p className="flex items-center gap-2 text-sm font-semibold"><CheckCircle2 style={{ color: 'var(--accent)' }} /> {t('batchDone')} {summary.count} images · {t('totalOriginal')}: {formatBytes(summary.original)} → {t('totalCompressed')}: {formatBytes(summary.compressed)} · {savedPct}% {t('saved')}</p>
+                <motion.div role="status" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="card flex flex-wrap items-center justify-between gap-3 p-4">
+                  <p className="flex items-center gap-2 text-sm font-semibold"><CheckCircle2 style={{ color: 'var(--accent)' }} aria-hidden="true" /> {t('batchDone')} {summary.count} images · {t('totalOriginal')}: {formatBytes(summary.original)} → {t('totalCompressed')}: {formatBytes(summary.compressed)} · {savedPct}% {t('saved')}</p>
                   <button className="btn-primary text-sm" onClick={() => void downloadAllZip()}>{t('downloadAll')}</button>
                 </motion.div>
               )}
@@ -143,7 +143,7 @@ export default function HomePage() {
                 <p className="text-sm font-medium">{s.jobs.length} {t('jobsCount')} · {doneCount} {t('done')}</p>
                 <div className="flex flex-wrap gap-2">
                   <button className="btn-primary !min-h-0 !px-4 !py-2 text-sm" disabled={batchRunning} onClick={() => void compressAll()}>
-                    {batchRunning && <Loader2 className="mr-2 animate-spin" size={16} />}{batchRunning ? `${t('compressingCount')}…` : t('compressAll')}
+                    {batchRunning && <Loader2 className="mr-2 animate-spin" size={16} aria-hidden="true" />}{batchRunning ? `${t('compressingCount')}…` : t('compressAll')}
                   </button>
                   <button className="btn-ghost !min-h-0 !px-4 !py-2 text-sm" disabled={!doneCount} onClick={() => void downloadAllZip()}>{t('downloadAll')}</button>
                   <button className="btn-ghost !min-h-0 !px-4 !py-2 text-sm" onClick={s.clearAll}>{t('clearAll')}</button>
@@ -172,7 +172,7 @@ export default function HomePage() {
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map((f) => (
             <div key={f.title} className="card p-5">
-              <f.icon size={18} className="muted" />
+              <f.icon size={18} className="muted" aria-hidden="true" />
               <h3 className="mt-3 font-medium">{t(f.title)}</h3>
               <p className="muted mt-1 text-sm leading-relaxed">{t(f.text)}</p>
             </div>
