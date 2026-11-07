@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCompressorStore } from '../store/useCompressorStore';
-import { FORMAT_EXT, type OutputFormat } from '../lib/formats';
+import { type OutputFormat } from '../lib/formats';
 
 export default function SettingsPanel() {
   const { t } = useTranslation();
@@ -18,6 +18,9 @@ export default function SettingsPanel() {
     { key: 'presetLossless', format: 'png' as OutputFormat, quality: 100, max: 0 },
   ];
   const activePreset = presets.find((p) => p.format === s.format && p.quality === s.quality && p.max === s.maxWidthOrHeight);
+  // Quality slider fill: WebKit paints the track from the input's own
+  // background, so the filled share is set inline from the value.
+  const qualityFill = ((s.quality - 10) / (100 - 10)) * 100;
   return (
     <section className="card p-5">
       <h2 className="text-base font-medium">{t('settings')}</h2>
@@ -28,28 +31,35 @@ export default function SettingsPanel() {
           </button>
         ))}
       </div>
-      <label className="mt-5 block text-sm font-medium">{t('format')}
-        <select className="field mt-2" value={s.format} onChange={(e) => s.setSettings({ format: e.target.value as OutputFormat })}>
-          {s.supportedFormats.map((f) => <option key={f} value={f}>{f.toUpperCase()} (.{FORMAT_EXT[f]})</option>)}
-        </select>
+      {/* Format has only 3-4 options, so a segmented control beats a
+          dropdown: every option stays visible, one tap to switch. */}
+      <div className="mt-5">
+        <span className="block text-sm font-medium" id="format-label">{t('format')}</span>
+        <div className="seg mt-2" role="group" aria-labelledby="format-label">
+          {s.supportedFormats.map((f) => (
+            <button key={f} aria-pressed={s.format === f} onClick={() => s.setSettings({ format: f })}>{f.toUpperCase()}</button>
+          ))}
+        </div>
         <span className="muted block pt-1 text-xs">{t('supportedNote')}</span>
-      </label>
+      </div>
       <label className="mt-4 block text-sm font-medium">{t('quality')}: {s.quality}%
-        <input className="mt-3 w-full" type="range" min={10} max={100} value={s.quality} onChange={(e) => s.setSettings({ quality: Number(e.target.value) })} />
+        <input className="slider mt-3" type="range" min={10} max={100} value={s.quality} aria-valuetext={`${s.quality}%`} onChange={(e) => s.setSettings({ quality: Number(e.target.value) })} style={{ background: `linear-gradient(to right, var(--accent) ${qualityFill}%, var(--surface-2) ${qualityFill}%)` }} />
       </label>
       <label className="mt-4 block text-sm font-medium">{t('maxSize')}
         <input className="field mt-2" type="number" min={0} inputMode="numeric" value={s.maxWidthOrHeight} onChange={(e) => s.setSettings({ maxWidthOrHeight: Number(e.target.value) })} />
       </label>
-      <label className="mt-4 block text-sm font-medium">{t('targetSize')}
+      <div className="mt-4">
+        <span className="block text-sm font-medium" id="target-label">{t('targetSize')}</span>
         <span className="mt-2 flex gap-2">
-          <input className="field" type="number" min={0} inputMode="decimal" value={displayTarget} onChange={(e) => s.setSettings({ targetSizeKb: Math.max(0, Math.round(Number(e.target.value) * (unit === 'MB' ? 1024 : 1))) })} />
-          <select className="field w-24 shrink-0" value={unit} onChange={(e) => setUnit(e.target.value as 'KB' | 'MB')} aria-label={t('targetSizeUnit')}>
-            <option value="KB">KB</option>
-            <option value="MB">MB</option>
-          </select>
+          <input className="field" type="number" min={0} inputMode="decimal" aria-labelledby="target-label" value={displayTarget} onChange={(e) => s.setSettings({ targetSizeKb: Math.max(0, Math.round(Number(e.target.value) * (unit === 'MB' ? 1024 : 1))) })} />
+          <span className="seg w-24 shrink-0" role="group" aria-label={t('targetSizeUnit')}>
+            {(['KB', 'MB'] as const).map((u) => (
+              <button key={u} aria-pressed={unit === u} onClick={() => setUnit(u)}>{u}</button>
+            ))}
+          </span>
         </span>
         <span className="muted block pt-1 text-xs">{t('targetSizeNote')}</span>
-      </label>
+      </div>
       <label className="mt-4 flex items-center gap-2 text-sm font-medium">
         <input type="checkbox" checked={s.stripMetadata} onChange={(e) => s.setSettings({ stripMetadata: e.target.checked })} />
         {t('stripMetadata')}

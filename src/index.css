@@ -3,12 +3,12 @@
 /* Professional dark-first SaaS system. Light theme is still available via the toggle. */
 [data-theme="dark"] {
   --bg: #141415; --surface: #19191b; --surface-2: #232325;
-  --text: #ededed; --muted: #a1a1a6; --border: #26262a;
+  --text: #ededed; --muted: #a1a1a6; --border: #26262a; --border-hover: #3a3a40;
   --accent: #4cc38a; --accent-text: #04140a; --danger: #e5484d;
 }
 [data-theme="light"] {
   --bg: #fafafa; --surface: #ffffff; --surface-2: #f4f4f5;
-  --text: #171717; --muted: #737373; --border: #e5e5e5;
+  --text: #171717; --muted: #737373; --border: #e5e5e5; --border-hover: #cfcfcf;
   --accent: #0e9f6e; --accent-text: #ffffff; --danger: #dc2626;
 }
 html { color-scheme: dark; }
@@ -19,6 +19,11 @@ h1 { letter-spacing: -0.02em; }
 .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; }
 input[type="range"] { accent-color: var(--accent); }
 input[type="number"], select { font-size: 16px; }
+/* Number fields: spinners are fiddly and inconsistent across browsers;
+   arrow keys still step the value. */
+input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+input[type="checkbox"] { accent-color: var(--accent); width: 18px; height: 18px; flex-shrink: 0; }
 @layer components {
   .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 1px 2px rgba(0,0,0,.3); }
   .btn-primary { background: var(--accent); color: var(--accent-text); font-weight: 600; border-radius: 10px; padding: 0.65rem 1.3rem; box-shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 16px rgba(0,0,0,.25); transition: transform .15s ease, box-shadow .15s ease, filter .15s ease; }
@@ -27,7 +32,27 @@ input[type="number"], select { font-size: 16px; }
   .btn-primary:disabled { opacity: .5; transform: none; }
   .btn-ghost { border: 1px solid var(--border); border-radius: 10px; padding: 0.65rem 1rem; transition: background .15s ease, transform .15s ease; }
   .btn-ghost:hover { background: var(--surface-2); }
-  .field { background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 0.6rem 0.8rem; width: 100%; color: var(--text); }
+  .field { background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 0.6rem 0.8rem; width: 100%; min-height: 44px; color: var(--text); transition: border-color .15s ease; }
+  .field:hover { border-color: var(--border-hover); }
+  .field:focus-visible { border-color: var(--accent); }
+  /* Selects keep a consistent chevron instead of the OS default arrow. */
+  select.field { appearance: none; -webkit-appearance: none; padding-right: 2.2rem; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2388888f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.7rem center; }
+  /* Segmented control: for choices of 2-4 options, all options stay
+     visible instead of hiding behind a dropdown (Baymard/W3C). */
+  .seg { display: flex; gap: 2px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 2px; min-height: 44px; }
+  .seg > button { flex: 1; min-height: 40px; border-radius: 8px; font-size: 0.875rem; font-weight: 500; color: var(--muted); transition: background .15s ease, color .15s ease; }
+  .seg > button:hover { color: var(--text); }
+  .seg > button[aria-pressed="true"] { background: var(--accent); color: var(--accent-text); }
+  /* Quality slider: native input, custom thumb/track (Chrome guidance).
+     Fill comes from an inline gradient on WebKit and ::-moz-range-progress
+     on Firefox; the value is printed as text next to the label. */
+  input[type="range"].slider { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface-2); cursor: pointer; }
+  input[type="range"].slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 24px; height: 24px; border-radius: 50%; background: var(--accent); border: 2px solid var(--surface); box-shadow: 0 1px 3px rgba(0,0,0,.4); margin-top: -9px; cursor: grab; }
+  input[type="range"].slider::-webkit-slider-thumb:active { cursor: grabbing; }
+  input[type="range"].slider::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: var(--accent); border: 2px solid var(--surface); box-shadow: 0 1px 3px rgba(0,0,0,.4); cursor: grab; }
+  input[type="range"].slider::-moz-range-track { height: 6px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface-2); }
+  input[type="range"].slider::-moz-range-progress { height: 6px; border-radius: 999px; background: var(--accent); }
+  input[type="range"].slider:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
   .muted { color: var(--muted); }
 }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
