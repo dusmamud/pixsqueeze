@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import type { OutputFormat } from '../lib/formats';
+import type { ErrorKey } from '../lib/errors';
 
 export type JobStatus = 'waiting' | 'processing' | 'done' | 'failed';
 export interface Job {
@@ -13,6 +14,8 @@ export interface Job {
   /** Set when a target size was active: false means the smallest encode still missed it. */
   targetMet?: boolean;
   exifNote?: string | null;
+  /** Friendly, translated reason for a failed job (see lib/errors.ts). */
+  errorKey?: ErrorKey;
   error?: string;
 }
 export type Theme = 'dark' | 'light';

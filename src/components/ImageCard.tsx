@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
 import { ReactCompareSlider, ReactCompareSliderImage } from 'react-compare-slider';
-import { Download, X, Columns2, Crop as CropIcon, RotateCcw, Loader2 } from 'lucide-react';
+import { Download, X, Columns2, Crop as CropIcon, RotateCcw, Loader2, TriangleAlert } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { Job } from '../store/useCompressorStore';
 import { useCompressorStore } from '../store/useCompressorStore';
@@ -25,6 +25,12 @@ export default function ImageCard({ job, onRetry }: { job: Job; onRetry?: (job: 
           <p className="truncate text-sm font-semibold" title={job.file.name}>{job.file.name}</p>
           <p className="mono muted mt-1 text-xs">{t('original')}: {fb(job.file.size)}{job.resultSize !== undefined ? ` → ${t('compressed')}: ${fb(job.resultSize)}` : ''}</p>
           <p className="mt-1.5 text-xs font-medium" aria-live="polite">{statusText}</p>
+          {job.status === 'failed' && (
+            <p role="alert" className="mt-1.5 flex items-start gap-1.5 text-xs font-medium" style={{ color: 'var(--danger)' }}>
+              <TriangleAlert size={14} className="mt-px shrink-0" aria-hidden="true" />
+              <span>{t(job.errorKey ?? 'errGeneric')}</span>
+            </p>
+          )}
           {job.exifNote && <p className="muted mt-1 text-xs">EXIF: {job.exifNote}</p>}
           {job.status === 'processing' && <span className="mt-2 flex items-center gap-2 text-sm"><Loader2 className="animate-spin" size={16} aria-hidden="true" />{t('processing')}</span>}
         </div>

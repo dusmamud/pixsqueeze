@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 import { ReactCompareSlider, ReactCompareSliderImage } from 'react-compare-slider';
-import { ShieldCheck, Zap, Layers, SlidersHorizontal, ImageDown, WifiOff, CheckCircle2, Loader2, Lock, Check } from 'lucide-react';
+import { ShieldCheck, Zap, Layers, SlidersHorizontal, ImageDown, WifiOff, CheckCircle2, Loader2, Lock, Check, TriangleAlert, X } from 'lucide-react';
 import DropzoneArea from '../components/DropzoneArea';
 import SettingsPanel from '../components/SettingsPanel';
 import ImageCard from '../components/ImageCard';
@@ -10,6 +10,7 @@ import Stepper from '../components/Stepper';
 import { useCompressorStore, type Job } from '../store/useCompressorStore';
 import { detectSupportedFormats, FORMAT_EXT, formatBytes } from '../lib/formats';
 import { compressImage } from '../lib/compress';
+import { errorKeyFor } from '../lib/errors';
 import { readExifSummary } from '../lib/metadata';
 import { downloadAsZip } from '../lib/download';
 import { outputName as outName } from '../lib/utils';
@@ -30,8 +31,11 @@ export default function HomePage() {
   const [batchDone, setBatchDone] = useState(0);
   const [batchTotal, setBatchTotal] = useState(0);
   const [summary, setSummary] = useState<{ count: number; original: number; compressed: number } | null>(null);
+  // App-level notice for errors that belong to no single job (sample
+  // image, ZIP download). Shown once, dismissible, announced to AT.
+  const [notice, setNotice] = useState<string | null>(null);
 
-  useEffect(() => { void detectSupportedFormats().then((f) => s.setSupportedFormats(f)); }, []);
+  useEffect(() => { void detectSupportedFormats().then((f) => s.setSupportedFormats(f)).catch(() => undefined); }, []);
   useEffect(() => {
     const onPaste = (e: ClipboardEvent) => {
       const files = Array.from(e.clipboardData?.files ?? []).filter((f) => f.type.startsWith('image/'));
@@ -49,7 +53,7 @@ export default function HomePage() {
       s.updateJob(job.id, { status: 'done', resultUrl: URL.createObjectURL(res.blob), resultName: outName(job.file.name, FORMAT_EXT[s.format]), resultSize: res.blob.size, exifNote, targetMet: s.targetSizeKb > 0 ? res.targetMet : undefined });
       return true;
     } catch (e) {
-      s.updateJob(job.id, { status: 'failed', error: e instanceof Error ? e.message : 'Failed' });
+      s.updateJob(job.id, { status: 'failed', error: e instanceof Error ? e.message : 'Failed', errorKey: errorKeyFor(e) });
       return false;
     }
   };
@@ -65,18 +69,30 @@ export default function HomePage() {
   };
 
   const downloadAllZip = async () => {
-    const done = s.jobs.filter((j) => j.resultUrl && j.resultName);
-    const files = await Promise.all(done.map(async (j) => ({ name: j.resultName!, blob: await fetch(j.resultUrl!).then((r) => r.blob()) })));
-    if (files.length) void downloadAsZip(files, 'imgcompressor-compressed.zip');
+    try {
+      const done = s.jobs.filter((j) => j.resultUrl && j.resultName);
+      const files = await Promise.all(done.map(async (j) => ({ name: j.resultName!, blob: await fetch(j.resultUrl!).then((r) => r.blob()) })));
+      if (files.length) { await downloadAsZip(files, 'imgcompressor-compressed.zip'); setNotice(null); }
+    } catch {
+      setNotice('errZip');
+    }
   };
 
   const trySample = async () => {
-    const blob = await fetch('/sample.png').then((r) => r.blob());
-    s.addFiles([new File([blob], 'sample-image.png', { type: 'image/png' })]);
+    try {
+      const res = await fetch('/sample.png');
+      if (!res.ok) throw new Error(`Sample image failed: ${res.status}`);
+      const blob = await res.blob();
+      setNotice(null);
+      s.addFiles([new File([blob], 'sample-image.png', { type: 'image/png' })]);
+    } catch {
+      setNotice('errSample');
+    }
   };
 
   const savedPct = summary && summary.original ? Math.round((1 - summary.compressed / summary.original) * 100) : 0;
   const doneCount = s.jobs.filter((j) => j.status === 'done').length;
+  const failedCount = s.jobs.filter((j) => j.status === 'failed').length;
 
   return (
     <div>
@@ -119,6 +135,15 @@ export default function HomePage() {
         <div className="grid items-start gap-5 lg:grid-cols-[340px_minmax(0,1fr)]">
           <div className="lg:sticky lg:top-24"><SettingsPanel /></div>
           <div className="min-w-0 space-y-4">
+            {notice && (
+              <div role="alert" className="alert">
+                <TriangleAlert size={16} className="mt-px shrink-0" style={{ color: 'var(--danger)' }} aria-hidden="true" />
+                <p className="min-w-0 flex-1 text-sm">{t(notice)}</p>
+                <button aria-label={t('dismiss')} className="shrink-0 rounded-lg p-1" onClick={() => setNotice(null)}>
+                  <X size={16} aria-hidden="true" />
+                </button>
+              </div>
+            )}
             <DropzoneArea />
             {batchRunning && (
               <div aria-live="polite" className="card p-4">
@@ -131,7 +156,7 @@ export default function HomePage() {
             <AnimatePresence>
               {summary && !batchRunning && (
                 <motion.div role="status" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="card flex flex-wrap items-center justify-between gap-3 p-4">
-                  <p className="flex items-center gap-2 text-sm font-semibold"><CheckCircle2 style={{ color: 'var(--accent)' }} aria-hidden="true" /> {t('batchDone')} {summary.count} images · {t('totalOriginal')}: {formatBytes(summary.original)} → {t('totalCompressed')}: {formatBytes(summary.compressed)} · {savedPct}% {t('saved')}</p>
+                  <p className="flex items-center gap-2 text-sm font-semibold"><CheckCircle2 style={{ color: 'var(--accent)' }} aria-hidden="true" /> {t('batchDone')} {summary.count} images · {t('totalOriginal')}: {formatBytes(summary.original)} → {t('totalCompressed')}: {formatBytes(summary.compressed)} · {savedPct}% {t('saved')}{failedCount > 0 ? ` · ${failedCount} ${t('batchFailed')}` : ''}</p>
                   <button className="btn-primary text-sm" onClick={() => void downloadAllZip()}>{t('downloadAll')}</button>
                 </motion.div>
               )}

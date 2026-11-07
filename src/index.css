@@ -33,6 +33,8 @@ input[type="checkbox"] { accent-color: var(--accent); width: 18px; height: 18px;
   .btn-ghost { border: 1px solid var(--border); border-radius: 10px; padding: 0.65rem 1rem; transition: background .15s ease, transform .15s ease; }
   .btn-ghost:hover { background: var(--surface-2); }
   .field { background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 0.6rem 0.8rem; width: 100%; min-height: 44px; color: var(--text); transition: border-color .15s ease; }
+  /* Error notice: danger border + icon, quiet text, dismissible. */
+  .alert { display: flex; align-items: flex-start; gap: 0.5rem; background: var(--surface); border: 1px solid var(--danger); border-radius: 10px; padding: 0.75rem 1rem; }
   .field:hover { border-color: var(--border-hover); }
   .field:focus-visible { border-color: var(--accent); }
   /* Selects keep a consistent chevron instead of the OS default arrow. */
