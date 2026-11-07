@@ -65,3 +65,4 @@ src/
   locales/     en.json (default), hi.json
   store/       useCompressorStore (zustand)
 ```
+- **Tip:** paste an image straight from your clipboard with Ctrl+V (Cmd+V on Mac) — no need to save it as a file first.
