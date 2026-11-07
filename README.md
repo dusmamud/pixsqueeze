@@ -68,3 +68,4 @@ src/
 - **Tip:** paste an image straight from your clipboard with Ctrl+V (Cmd+V on Mac) — no need to save it as a file first.
 - **Tip:** re-encoding strips EXIF and GPS data, so a compressed download never carries your photo's location or camera metadata.
 - **Tip:** HEIC photos work too — the HEIC decoder is lazy-loaded only when a HEIC file actually arrives.
+- **Tip:** if a format is missing from the output list, your browser can't encode it — support is detected at load with a 2×2 canvas test, and the app never silently falls back to another format.
