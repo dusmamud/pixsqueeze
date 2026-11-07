@@ -32,7 +32,7 @@ export default function Header() {
   return (
     <>
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:rounded-lg focus:px-4 focus:py-2 focus:text-sm focus:font-semibold" style={{ background: 'var(--accent)', color: 'var(--accent-text)' }}>{t('skipToContent')}</a>
-      <header className="sticky top-0 z-40 -mx-4 px-4 backdrop-blur" style={{ background: 'color-mix(in srgb, var(--bg) 85%, transparent)' }}>
+      <header className="-mx-4 px-4">
       <div className="mx-auto flex h-16 max-w-7xl flex-nowrap items-center justify-between gap-3">
         <Link to="/" className="flex items-center gap-2.5">
           <span className="grid h-9 w-9 place-items-center rounded-xl" style={{ background: 'var(--accent)', color: 'var(--accent-text)' }}><ImageDown size={20} aria-hidden="true" /></span>

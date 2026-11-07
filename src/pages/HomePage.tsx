@@ -131,9 +131,9 @@ export default function HomePage() {
       <div className="mt-12"><Stepper /></div>
 
       {/* Tool: sidebar settings on desktop, stacked on mobile/tablet. */}
-      <section id="tool" className="mt-12 scroll-mt-24">
+      <section id="tool" className="mt-12 scroll-mt-4">
         <div className="grid items-start gap-5 lg:grid-cols-[340px_minmax(0,1fr)]">
-          <div className="lg:sticky lg:top-24"><SettingsPanel /></div>
+          <div className="lg:sticky lg:top-4"><SettingsPanel /></div>
           <div className="min-w-0 space-y-4">
             {notice && (
               <div role="alert" className="alert">
@@ -164,7 +164,7 @@ export default function HomePage() {
 
             {/* Sticky batch bar: actions stay reachable while scrolling a long queue. */}
             {s.jobs.length > 0 && (
-              <div className="card sticky top-[72px] z-20 flex flex-wrap items-center justify-between gap-3 p-3">
+              <div className="card sticky top-2 z-20 flex flex-wrap items-center justify-between gap-3 p-3">
                 <p className="text-sm font-medium">{s.jobs.length} {t('jobsCount')} · {doneCount} {t('done')}</p>
                 <div className="flex flex-wrap gap-2">
                   <button className="btn-primary !min-h-0 !px-4 !py-2 text-sm" disabled={batchRunning} onClick={() => void compressAll()}>
