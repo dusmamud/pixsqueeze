@@ -66,3 +66,4 @@ src/
   store/       useCompressorStore (zustand)
 ```
 - **Tip:** paste an image straight from your clipboard with Ctrl+V (Cmd+V on Mac) — no need to save it as a file first.
+- **Tip:** re-encoding strips EXIF and GPS data, so a compressed download never carries your photo's location or camera metadata.
