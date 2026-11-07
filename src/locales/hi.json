@@ -14,6 +14,7 @@
   "stripMetadata": "EXIF / GPS metadata hatayo",
   "compressAll": "Sab compress karo",
   "downloadAll": "ZIP me download karo",
+  "downloading": "Download ho raha hai…",
   "clearAll": "Sab hatayo",
   "original": "Original",
   "compressed": "Compressed",

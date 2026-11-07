@@ -31,6 +31,8 @@ export default function HomePage() {
   const [batchDone, setBatchDone] = useState(0);
   const [batchTotal, setBatchTotal] = useState(0);
   const [summary, setSummary] = useState<{ count: number; original: number; compressed: number } | null>(null);
+  const [zipRunning, setZipRunning] = useState(false);
+  const [sampleLoading, setSampleLoading] = useState(false);
   // App-level notice for errors that belong to no single job (sample
   // image, ZIP download). Shown once, dismissible, announced to AT.
   const [notice, setNotice] = useState<string | null>(null);
@@ -69,16 +71,22 @@ export default function HomePage() {
   };
 
   const downloadAllZip = async () => {
+    if (zipRunning) return;
+    setZipRunning(true);
     try {
       const done = s.jobs.filter((j) => j.resultUrl && j.resultName);
       const files = await Promise.all(done.map(async (j) => ({ name: j.resultName!, blob: await fetch(j.resultUrl!).then((r) => r.blob()) })));
       if (files.length) { await downloadAsZip(files, 'imgcompressor-compressed.zip'); setNotice(null); }
     } catch {
       setNotice('errZip');
+    } finally {
+      setZipRunning(false);
     }
   };
 
   const trySample = async () => {
+    if (sampleLoading) return;
+    setSampleLoading(true);
     try {
       const res = await fetch('/sample.png');
       if (!res.ok) throw new Error(`Sample image failed: ${res.status}`);
@@ -87,6 +95,8 @@ export default function HomePage() {
       s.addFiles([new File([blob], 'sample-image.png', { type: 'image/png' })]);
     } catch {
       setNotice('errSample');
+    } finally {
+      setSampleLoading(false);
     }
   };
 
@@ -105,7 +115,7 @@ export default function HomePage() {
             <p className="muted mt-4 max-w-lg text-base sm:text-lg">{t('heroSub')}</p>
             <div className="mt-6 flex flex-wrap gap-3">
               <a href="#tool" className="btn-primary">{t('startCompressing')}</a>
-              <button className="btn-ghost" onClick={() => void trySample()}>{t('trySample')}</button>
+              <button className={`btn-ghost${sampleLoading ? ' btn-busy' : ''}`} disabled={sampleLoading} aria-busy={sampleLoading} onClick={() => void trySample()}>{sampleLoading && <Loader2 className="animate-spin" size={16} aria-hidden="true" />}{t('trySample')}</button>
             </div>
             <div className="mt-8 grid max-w-md grid-cols-2 gap-4 sm:grid-cols-4">
               <div><p className="mono text-xl font-medium">0</p><p className="muted text-xs">{t('statUploads')}</p></div>
@@ -157,7 +167,7 @@ export default function HomePage() {
               {summary && !batchRunning && (
                 <motion.div role="status" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="card flex flex-wrap items-center justify-between gap-3 p-4">
                   <p className="flex items-center gap-2 text-sm font-semibold"><CheckCircle2 style={{ color: 'var(--accent)' }} aria-hidden="true" /> {t('batchDone')} {summary.count} images · {t('totalOriginal')}: {formatBytes(summary.original)} → {t('totalCompressed')}: {formatBytes(summary.compressed)} · {savedPct}% {t('saved')}{failedCount > 0 ? ` · ${failedCount} ${t('batchFailed')}` : ''}</p>
-                  <button className="btn-primary text-sm" onClick={() => void downloadAllZip()}>{t('downloadAll')}</button>
+                  <button className={`btn-primary text-sm${zipRunning ? ' btn-busy' : ''}`} disabled={zipRunning} aria-busy={zipRunning} onClick={() => void downloadAllZip()}>{zipRunning && <Loader2 className="animate-spin" size={16} aria-hidden="true" />}{zipRunning ? t('downloading') : t('downloadAll')}</button>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -167,10 +177,10 @@ export default function HomePage() {
               <div className="card sticky top-2 z-20 flex flex-wrap items-center justify-between gap-3 p-3">
                 <p className="text-sm font-medium">{s.jobs.length} {t('jobsCount')} · {doneCount} {t('done')}</p>
                 <div className="flex flex-wrap gap-2">
-                  <button className="btn-primary !min-h-0 !px-4 !py-2 text-sm" disabled={batchRunning} onClick={() => void compressAll()}>
-                    {batchRunning && <Loader2 className="mr-2 animate-spin" size={16} aria-hidden="true" />}{batchRunning ? `${t('compressingCount')}…` : t('compressAll')}
+                  <button className={`btn-primary btn-compress !min-h-0 !px-4 !py-2 text-sm${batchRunning ? ' btn-busy' : ''}`} disabled={batchRunning} aria-busy={batchRunning} onClick={() => void compressAll()}>
+                    {batchRunning && <Loader2 className="animate-spin" size={16} aria-hidden="true" />}{batchRunning ? `${t('compressingCount')}…` : t('compressAll')}
                   </button>
-                  <button className="btn-ghost !min-h-0 !px-4 !py-2 text-sm" disabled={!doneCount} onClick={() => void downloadAllZip()}>{t('downloadAll')}</button>
+                  <button className={`btn-ghost !min-h-0 !px-4 !py-2 text-sm${zipRunning ? ' btn-busy' : ''}`} disabled={zipRunning || !doneCount} aria-busy={zipRunning} onClick={() => void downloadAllZip()}>{zipRunning && <Loader2 className="animate-spin" size={16} aria-hidden="true" />}{zipRunning ? t('downloading') : t('downloadAll')}</button>
                   <button className="btn-ghost !min-h-0 !px-4 !py-2 text-sm" onClick={s.clearAll}>{t('clearAll')}</button>
                 </div>
               </div>
@@ -179,7 +189,7 @@ export default function HomePage() {
             {s.jobs.length === 0 ? (
               <div className="card py-10 text-center">
                 <p className="muted">{t('noImages')}</p>
-                <button className="btn-ghost mt-4" onClick={() => void trySample()}>{t('trySample')}</button>
+                <button className={`btn-ghost mt-4${sampleLoading ? ' btn-busy' : ''}`} disabled={sampleLoading} aria-busy={sampleLoading} onClick={() => void trySample()}>{sampleLoading && <Loader2 className="animate-spin" size={16} aria-hidden="true" />}{t('trySample')}</button>
               </div>
             ) : (
               <div className="space-y-3">

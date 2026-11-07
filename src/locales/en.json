@@ -14,6 +14,7 @@
   "stripMetadata": "Strip EXIF / GPS metadata",
   "compressAll": "Compress all",
   "downloadAll": "Download all as ZIP",
+  "downloading": "Downloading…",
   "clearAll": "Clear all",
   "original": "Original",
   "compressed": "Compressed",
