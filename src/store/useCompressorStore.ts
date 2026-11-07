@@ -10,6 +10,8 @@ export interface Job {
   resultUrl?: string;
   resultName?: string;
   resultSize?: number;
+  /** Set when a target size was active: false means the smallest encode still missed it. */
+  targetMet?: boolean;
   exifNote?: string | null;
   error?: string;
 }
@@ -21,12 +23,14 @@ interface State {
   quality: number;
   maxWidthOrHeight: number;
   stripMetadata: boolean;
+  /** Target output size in KB. 0 = off. */
+  targetSizeKb: number;
   supportedFormats: OutputFormat[];
   theme: Theme;
   addFiles: (files: File[]) => void;
   removeJob: (id: string) => void;
   clearAll: () => void;
-  setSettings: (p: Partial<Pick<State, 'format' | 'quality' | 'maxWidthOrHeight' | 'stripMetadata'>>) => void;
+  setSettings: (p: Partial<Pick<State, 'format' | 'quality' | 'maxWidthOrHeight' | 'stripMetadata' | 'targetSizeKb'>>) => void;
   setSupportedFormats: (f: OutputFormat[]) => void;
   setTheme: (t: Theme) => void;
   updateJob: (id: string, p: Partial<Job>) => void;
@@ -38,6 +42,7 @@ export const useCompressorStore = create<State>((set) => ({
   quality: 80,
   maxWidthOrHeight: 0,
   stripMetadata: true,
+  targetSizeKb: 0,
   supportedFormats: ['jpeg', 'png', 'webp'],
   theme: (document.documentElement.getAttribute('data-theme') as Theme) || 'dark',
   addFiles: (files) => set((s) => ({

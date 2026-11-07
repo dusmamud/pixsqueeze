@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCompressorStore } from '../store/useCompressorStore';
 import { FORMAT_EXT, type OutputFormat } from '../lib/formats';
@@ -5,6 +6,9 @@ import { FORMAT_EXT, type OutputFormat } from '../lib/formats';
 export default function SettingsPanel() {
   const { t } = useTranslation();
   const s = useCompressorStore();
+  const [unit, setUnit] = useState<'KB' | 'MB'>('KB');
+  // Stored as KB; the field shows it in the chosen unit (MB rounded to 2dp).
+  const displayTarget = unit === 'KB' ? s.targetSizeKb : Math.round((s.targetSizeKb / 1024) * 100) / 100;
   const pick = (format: OutputFormat, fallback: OutputFormat): OutputFormat =>
     s.supportedFormats.includes(format) ? format : fallback;
   const presets = [
@@ -35,6 +39,16 @@ export default function SettingsPanel() {
       </label>
       <label className="mt-4 block text-sm font-medium">{t('maxSize')}
         <input className="field mt-2" type="number" min={0} inputMode="numeric" value={s.maxWidthOrHeight} onChange={(e) => s.setSettings({ maxWidthOrHeight: Number(e.target.value) })} />
+      </label>
+      <label className="mt-4 block text-sm font-medium">{t('targetSize')}
+        <span className="mt-2 flex gap-2">
+          <input className="field" type="number" min={0} inputMode="decimal" value={displayTarget} onChange={(e) => s.setSettings({ targetSizeKb: Math.max(0, Math.round(Number(e.target.value) * (unit === 'MB' ? 1024 : 1))) })} />
+          <select className="field w-24 shrink-0" value={unit} onChange={(e) => setUnit(e.target.value as 'KB' | 'MB')} aria-label={t('targetSizeUnit')}>
+            <option value="KB">KB</option>
+            <option value="MB">MB</option>
+          </select>
+        </span>
+        <span className="muted block pt-1 text-xs">{t('targetSizeNote')}</span>
       </label>
       <label className="mt-4 flex items-center gap-2 text-sm font-medium">
         <input type="checkbox" checked={s.stripMetadata} onChange={(e) => s.setSettings({ stripMetadata: e.target.checked })} />

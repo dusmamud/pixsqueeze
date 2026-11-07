@@ -45,8 +45,8 @@ export default function HomePage() {
     s.updateJob(job.id, { status: 'processing' });
     try {
       const exifNote = await readExifSummary(job.file);
-      const blob = await compressImage(job.file, { format: s.format, quality: s.quality, maxWidthOrHeight: s.maxWidthOrHeight, stripMetadata: s.stripMetadata });
-      s.updateJob(job.id, { status: 'done', resultUrl: URL.createObjectURL(blob), resultName: outName(job.file.name, FORMAT_EXT[s.format]), resultSize: blob.size, exifNote });
+      const res = await compressImage(job.file, { format: s.format, quality: s.quality, maxWidthOrHeight: s.maxWidthOrHeight, stripMetadata: s.stripMetadata, targetSizeKb: s.targetSizeKb });
+      s.updateJob(job.id, { status: 'done', resultUrl: URL.createObjectURL(res.blob), resultName: outName(job.file.name, FORMAT_EXT[s.format]), resultSize: res.blob.size, exifNote, targetMet: s.targetSizeKb > 0 ? res.targetMet : undefined });
       return true;
     } catch (e) {
       s.updateJob(job.id, { status: 'failed', error: e instanceof Error ? e.message : 'Failed' });

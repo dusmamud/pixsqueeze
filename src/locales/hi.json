@@ -113,5 +113,9 @@
   "selected": "chuni gayi",
   "skipToContent": "Mukhya content par jayein",
   "switchToLight": "Halki theme par badlein",
-  "switchToDark": "Gehri theme par badlein"
+  "switchToDark": "Gehri theme par badlein",
+  "targetSize": "Target size",
+  "targetSizeUnit": "Target size unit",
+  "targetSizeNote": "0 = band. Set karne par upar wali quality maximum hoti hai — compressor use zaroorat ke hisaab se kam karke file ko target se neeche laata hai.",
+  "targetMissed": "Target tak nahi pahuncha"
 }
