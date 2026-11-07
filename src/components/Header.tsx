@@ -26,7 +26,7 @@ export default function Header() {
     const scroll = () => document.getElementById('tool')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     if (location.pathname !== '/') { navigate('/'); window.setTimeout(scroll, 200); } else { scroll(); }
   };
-  const changeLng = (lng: string) => { void i18n.changeLanguage(lng); localStorage.setItem('imgcompressor-lng', lng); };
+  const changeLng = (lng: string) => { void i18n.changeLanguage(lng); }; // detector caches the choice in localStorage
   const linkCls = ({ isActive }: { isActive: boolean }) =>
     `rounded-lg px-3 py-1.5 text-sm font-medium ${isActive ? 'text-white' : 'muted'}`;
   return (

@@ -15,7 +15,7 @@ export default function DropzoneArea() {
     // just never appears and the user has no idea why.
     onDropRejected: (rejections) => {
       const names = rejections.map((r) => r.file.name);
-      setRejected(names.length === 1 ? `${names[0]} ${t('errNotImage')}` : `${names.length} ${t('errNotImageMany')}`);
+      setRejected(t('errNotImage', { count: names.length, name: names[0] }));
     },
   });
   return (

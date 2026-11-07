@@ -166,7 +166,7 @@ export default function HomePage() {
             <AnimatePresence>
               {summary && !batchRunning && (
                 <motion.div role="status" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="card flex flex-wrap items-center justify-between gap-3 p-4">
-                  <p className="flex items-center gap-2 text-sm font-semibold"><CheckCircle2 style={{ color: 'var(--accent)' }} aria-hidden="true" /> {t('batchDone')} {summary.count} images · {t('totalOriginal')}: {formatBytes(summary.original)} → {t('totalCompressed')}: {formatBytes(summary.compressed)} · {savedPct}% {t('saved')}{failedCount > 0 ? ` · ${failedCount} ${t('batchFailed')}` : ''}</p>
+                  <p className="flex items-center gap-2 text-sm font-semibold"><CheckCircle2 style={{ color: 'var(--accent)' }} aria-hidden="true" /> {t('batchDone')} {summary.count} {t('jobsCount', { count: summary.count })} · {t('totalOriginal')}: {formatBytes(summary.original)} → {t('totalCompressed')}: {formatBytes(summary.compressed)} · {savedPct}% {t('saved')}{failedCount > 0 ? ` · ${failedCount} ${t('batchFailed')}` : ''}</p>
                   <button className={`btn-primary text-sm${zipRunning ? ' btn-busy' : ''}`} disabled={zipRunning} aria-busy={zipRunning} onClick={() => void downloadAllZip()}>{zipRunning && <Loader2 className="animate-spin" size={16} aria-hidden="true" />}{zipRunning ? t('downloading') : t('downloadAll')}</button>
                 </motion.div>
               )}
@@ -175,7 +175,7 @@ export default function HomePage() {
             {/* Sticky batch bar: actions stay reachable while scrolling a long queue. */}
             {s.jobs.length > 0 && (
               <div className="card sticky top-2 z-20 flex flex-wrap items-center justify-between gap-3 p-3">
-                <p className="text-sm font-medium">{s.jobs.length} {t('jobsCount')} · {doneCount} {t('done')}</p>
+                <p className="text-sm font-medium">{s.jobs.length} {t('jobsCount', { count: s.jobs.length })} · {doneCount} {t('done')}</p>
                 <div className="flex flex-wrap gap-2">
                   <button className={`btn-primary btn-compress !min-h-0 !px-4 !py-2 text-sm${batchRunning ? ' btn-busy' : ''}`} disabled={batchRunning} aria-busy={batchRunning} onClick={() => void compressAll()}>
                     {batchRunning && <Loader2 className="animate-spin" size={16} aria-hidden="true" />}{batchRunning ? `${t('compressingCount')}…` : t('compressAll')}
