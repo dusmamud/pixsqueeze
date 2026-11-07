@@ -47,7 +47,10 @@ export const useCompressorStore = create<State>((set) => ({
   stripMetadata: true,
   targetSizeKb: 0,
   supportedFormats: ['jpeg', 'png', 'webp'],
-  theme: (document.documentElement.getAttribute('data-theme') as Theme) || 'dark',
+  // Initial theme comes from the <html data-theme> set by the inline script
+  // in index.html (avoids a theme flash). Guarded so the store is importable
+  // in Node (prerender) where document does not exist.
+  theme: ((typeof document !== 'undefined' ? document.documentElement.getAttribute('data-theme') : null) as Theme) || 'dark',
   addFiles: (files) => set((s) => ({
     jobs: [...s.jobs, ...files.filter((f) => f.type.startsWith('image/') || /\.(heic|heif|avif)$/i.test(f.name)).map((file) => ({
       id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,

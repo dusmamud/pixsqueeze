@@ -1,1 +1,7 @@
+# Default locale (English) never has a prefix: /en/... -> /... (permanent)
+/en / 301
+/en/* /:splat 301
+# Any other path the app handles client-side (SPA fallback). Real prerendered
+# files win over this rule, so /about serves about.html and /hi/about serves
+# hi/about.html; unknown paths fall through to the app's 404 page.
 /* /index.html 200

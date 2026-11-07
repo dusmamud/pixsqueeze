@@ -1,12 +1,7 @@
 import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
-import en from '../locales/en.json';
-import hi from '../locales/hi.json';
-
-// Compile-time guard: hi must carry exactly the same keys as en, so a
-// missing Hindi translation is a build error, not a silent English fallback.
-const hiTyped: typeof en = hi;
+import { DEFAULT_LOCALE, LOCALE_CODES, resources } from './locales';
 
 // Keep <html lang>, the document title and the meta description in sync with
 // the active language (i18next maintainer's recommended pattern, and a W3C
@@ -21,21 +16,25 @@ function syncDocument(lng: string) {
   if (meta) meta.setAttribute('content', i18n.t('metaDescription'));
 }
 
-// Detection order (i18next-browser-languagedetector): an explicit ?lng=hi
-// link wins, then the user's saved choice, then the browser language, then
-// the <html lang> tag. The choice is cached in localStorage under
-// 'imgcompressor-lng', so changeLanguage() in the header needs no manual
-// localStorage write. load: 'languageOnly' normalises 'hi-IN' to 'hi'.
+// Detection order (i18next-browser-languagedetector). The URL path is the
+// source of truth — one URL per language, as Google recommends. ?lng= is a
+// share-link override, localStorage is the user's saved choice, htmlTag is
+// the last resort. There is deliberately NO browser-language (navigator)
+// detection here: Google's guidance is not to auto-redirect on
+// Accept-Language, because its crawler would only ever see the default
+// language. The choice is cached in localStorage under 'imgcompressor-lng'.
+// load: 'languageOnly' normalises 'hi-IN' to 'hi'.
 void i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    resources: { en: { translation: en }, hi: { translation: hiTyped } },
-    supportedLngs: ['en', 'hi'],
-    fallbackLng: 'en',
+    resources,
+    supportedLngs: LOCALE_CODES,
+    fallbackLng: DEFAULT_LOCALE,
     load: 'languageOnly',
     detection: {
-      order: ['querystring', 'localStorage', 'navigator', 'htmlTag'],
+      order: ['path', 'querystring', 'localStorage', 'htmlTag'],
+      lookupFromPathIndex: 0,
       lookupQuerystring: 'lng',
       lookupLocalStorage: 'imgcompressor-lng',
       caches: ['localStorage'],
