@@ -74,6 +74,16 @@ button:disabled, input:disabled, select:disabled { cursor: not-allowed; }
 input[type='text'], input[type='number'], input[type='email'], input[type='url'], textarea { cursor: text; }
 /* Before/after compare: the handle drags left-right. */
 .react-compare-slider { cursor: ew-resize; }
+/* Crop dialog: react-image-crop's stylesheet is UNLAYERED, and unlayered
+   author styles beat any @layer rule, so these rules must live outside
+   @layer components too. The library sets max-height:inherit (0,1,1) on
+   the crop image, which beat the Tailwind max-h utility — tall photos
+   rendered at full height and overflowed the dialog by up to 285px,
+   hiding the bottom of the photo below the fold. This (0,2,1) rule caps
+   the image instead. dvh keeps the buttons above the mobile browser
+   toolbar; vh is the fallback. Scroll stays inside the dialog. */
+.crop-dialog { max-height: 90vh; max-height: 90dvh; overscroll-behavior: contain; }
+.crop-dialog .ReactCrop__child-wrapper > img { max-height: 60vh; max-height: 60dvh; }
 .btn-primary, .btn-ghost { min-height: 44px; }  /* display comes from the component layer, so Tailwind `hidden` still wins */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }

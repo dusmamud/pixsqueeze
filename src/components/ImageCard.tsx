@@ -37,10 +37,10 @@ export default function ImageCard({ job, onRetry }: { job: Job; onRetry?: (job: 
         <div className="flex flex-wrap gap-2 sm:flex-col sm:items-end">
           {job.resultUrl && job.resultName && <a className="btn-primary text-sm" href={job.resultUrl} download={job.resultName}><Download size={15} aria-hidden="true" />{t('download')}</a>}
           <div className="flex gap-2">
-            <button className="btn-ghost !min-h-0 !px-3 !py-2 text-sm" onClick={() => setShowCrop(true)}><CropIcon size={15} aria-hidden="true" />{t('crop')}</button>
-            {job.resultUrl && <button className="btn-ghost !min-h-0 !px-3 !py-2 text-sm" aria-pressed={showCompare} onClick={() => setShowCompare(!showCompare)}><Columns2 size={15} aria-hidden="true" />{t('compare')}</button>}
-            {job.status === 'failed' && onRetry && <button className="btn-primary !min-h-0 !px-3 !py-2 text-sm" onClick={() => onRetry(job)}><RotateCcw size={15} aria-hidden="true" />{t('retry')}</button>}
-            <button aria-label={t('remove')} className="btn-ghost !min-h-0 !px-3 !py-2" onClick={() => removeJob(job.id)}><X size={16} aria-hidden="true" /></button>
+            <button className="btn-ghost text-sm" onClick={() => setShowCrop(true)}><CropIcon size={15} aria-hidden="true" />{t('crop')}</button>
+            {job.resultUrl && <button className="btn-ghost text-sm" aria-pressed={showCompare} onClick={() => setShowCompare(!showCompare)}><Columns2 size={15} aria-hidden="true" />{t('compare')}</button>}
+            {job.status === 'failed' && onRetry && <button className="btn-primary text-sm" onClick={() => onRetry(job)}><RotateCcw size={15} aria-hidden="true" />{t('retry')}</button>}
+            <button aria-label={t('remove')} className="btn-ghost" onClick={() => removeJob(job.id)}><X size={16} aria-hidden="true" /></button>
           </div>
         </div>
       </div>

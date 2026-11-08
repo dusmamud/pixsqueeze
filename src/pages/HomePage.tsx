@@ -177,11 +177,11 @@ export default function HomePage() {
               <div className="card sticky top-2 z-20 flex flex-wrap items-center justify-between gap-3 p-3">
                 <p className="text-sm font-medium">{s.jobs.length} {t('jobsCount', { count: s.jobs.length })} · {doneCount} {t('done')}</p>
                 <div className="flex flex-wrap gap-2">
-                  <button className={`btn-primary btn-compress !min-h-0 !px-4 !py-2 text-sm${batchRunning ? ' btn-busy' : ''}`} disabled={batchRunning} aria-busy={batchRunning} onClick={() => void compressAll()}>
+                  <button className={`btn-primary btn-compress text-sm${batchRunning ? ' btn-busy' : ''}`} disabled={batchRunning} aria-busy={batchRunning} onClick={() => void compressAll()}>
                     {batchRunning && <Loader2 className="animate-spin" size={16} aria-hidden="true" />}{batchRunning ? `${t('compressingCount')}…` : t('compressAll')}
                   </button>
-                  <button className={`btn-ghost !min-h-0 !px-4 !py-2 text-sm${zipRunning ? ' btn-busy' : ''}`} disabled={zipRunning || !doneCount} aria-busy={zipRunning} onClick={() => void downloadAllZip()}>{zipRunning && <Loader2 className="animate-spin" size={16} aria-hidden="true" />}{zipRunning ? t('downloading') : t('downloadAll')}</button>
-                  <button className="btn-ghost !min-h-0 !px-4 !py-2 text-sm" onClick={s.clearAll}>{t('clearAll')}</button>
+                  <button className={`btn-ghost text-sm${zipRunning ? ' btn-busy' : ''}`} disabled={zipRunning || !doneCount} aria-busy={zipRunning} onClick={() => void downloadAllZip()}>{zipRunning && <Loader2 className="animate-spin" size={16} aria-hidden="true" />}{zipRunning ? t('downloading') : t('downloadAll')}</button>
+                  <button className="btn-ghost text-sm" onClick={s.clearAll}>{t('clearAll')}</button>
                 </div>
               </div>
             )}
