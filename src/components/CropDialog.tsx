@@ -46,9 +46,11 @@ export default function CropDialog({ job, onClose }: { job: Job; onClose: () => 
   return (
     <div className="fixed inset-0 z-50 grid place-items-center bg-black/70 p-4" role="dialog" aria-modal="true" aria-label={t('crop')} onClick={onClose}>
       <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} className="card crop-dialog w-full max-w-2xl overflow-auto p-4" onClick={(e) => e.stopPropagation()}>
-        <ReactCrop crop={crop} onChange={setCrop} onComplete={setCompleted}>
-          <img ref={imgRef} src={job.previewUrl} alt={job.file.name} onLoad={onImageLoad} className="w-full object-contain" />
-        </ReactCrop>
+        <div className="crop-stage">
+          <ReactCrop crop={crop} onChange={setCrop} onComplete={setCompleted}>
+            <img ref={imgRef} src={job.previewUrl} alt={job.file.name} onLoad={onImageLoad} className="w-full object-contain" />
+          </ReactCrop>
+        </div>
         <div className="mt-4 flex justify-end gap-2">
           <button ref={cancelRef} className="btn-ghost" onClick={onClose}>{t('cancel')}</button>
           <button className="btn-primary" disabled={!completed} onClick={() => void apply()}>{t('applyCrop')}</button>

@@ -78,12 +78,16 @@ input[type='text'], input[type='number'], input[type='email'], input[type='url']
    author styles beat any @layer rule, so these rules must live outside
    @layer components too. The library sets max-height:inherit (0,1,1) on
    the crop image, which beat the Tailwind max-h utility — tall photos
-   rendered at full height and overflowed the dialog by up to 285px,
-   hiding the bottom of the photo below the fold. This (0,2,1) rule caps
-   the image instead. dvh keeps the buttons above the mobile browser
+   rendered at full height and overflowed the dialog. This (0,2,1) rule
+   caps the image instead. dvh keeps the buttons above the mobile browser
    toolbar; vh is the fallback. Scroll stays inside the dialog. */
 .crop-dialog { max-height: 90vh; max-height: 90dvh; overscroll-behavior: contain; }
-.crop-dialog .ReactCrop__child-wrapper > img { max-height: 60vh; max-height: 60dvh; }
+/* Fixed stage (moduix pattern): one viewport size for every photo — the
+   image shrinks to fit and stays centered, so the dialog card no longer
+   follows the photo's dimensions. Same cap on the image as on the stage,
+   so the photo can never overflow it. */
+.crop-stage { display: grid; place-items: center; height: min(60dvh, 520px); overflow: hidden; border-radius: 12px; background: var(--surface-2); }
+.crop-dialog .ReactCrop__child-wrapper > img { max-height: min(60dvh, 520px); }
 .btn-primary, .btn-ghost { min-height: 44px; }  /* display comes from the component layer, so Tailwind `hidden` still wins */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }

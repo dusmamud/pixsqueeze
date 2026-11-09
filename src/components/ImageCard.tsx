@@ -46,8 +46,8 @@ export default function ImageCard({ job, onRetry }: { job: Job; onRetry?: (job: 
       </div>
       {showCrop && <CropDialog job={job} onClose={() => setShowCrop(false)} />}
       {showCompare && job.resultUrl && (
-        <div className="mt-4 overflow-hidden rounded-lg">
-          <ReactCompareSlider itemOne={<ReactCompareSliderImage src={job.previewUrl} alt={t('demoOriginal')} />} itemTwo={<ReactCompareSliderImage src={job.resultUrl} alt={t('demoCompressed')} />} />
+        <div className="mt-4 aspect-[4/3] max-h-[420px] w-full overflow-hidden rounded-lg">
+          <ReactCompareSlider style={{ height: '100%' }} itemOne={<ReactCompareSliderImage src={job.previewUrl} alt={t('demoOriginal')} />} itemTwo={<ReactCompareSliderImage src={job.resultUrl} alt={t('demoCompressed')} />} />
         </div>
       )}
     </motion.article>
