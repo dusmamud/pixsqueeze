@@ -33,7 +33,7 @@ export default function SettingsPanel() {
       </div>
       {/* Format has only 3-4 options, so a segmented control beats a
           dropdown: every option stays visible, one tap to switch. */}
-      <div className="mt-5">
+      <div className="mt-4">
         <span className="block text-sm font-medium" id="format-label">{t('format')}</span>
         <div className="seg mt-2" role="group" aria-labelledby="format-label">
           {s.supportedFormats.map((f) => (

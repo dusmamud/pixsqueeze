@@ -126,7 +126,7 @@ export default function HomePage() {
               <div><p className="mono text-xl font-medium">0</p><p className="muted text-xs">{t('statUploads')}</p></div>
               <div><p className="mono text-xl font-medium">4</p><p className="muted text-xs">{t('statFormats')}</p></div>
               <div><p className="mono text-xl font-medium">2</p><p className="muted text-xs">{t('statLanguages')}</p></div>
-              <div><p className="text-xl font-medium"><Check size={20} aria-hidden="true" /></p><p className="muted text-xs">{t('statOffline')}</p></div>
+              <div><p className="flex h-7 items-center text-xl font-medium"><Check size={20} aria-hidden="true" /></p><p className="muted text-xs">{t('statOffline')}</p></div>
             </div>
           </motion.div>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3, delay: 0.1 }} className="card overflow-hidden p-3">
@@ -143,7 +143,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <div className="mt-12"><Stepper /></div>
+      <Stepper />
 
       {/* Tool: sidebar settings on desktop, stacked on mobile/tablet. */}
       <section id="tool" className="mt-12 scroll-mt-4">
