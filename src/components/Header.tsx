@@ -32,14 +32,19 @@ export default function Header() {
     if (location.pathname !== homePath) { navigate(homePath); window.setTimeout(scroll, 200); } else { scroll(); }
   };
   // Switching language navigates to the same page in the other locale
-  // (SPA navigation, so an in-progress compression is not lost). The
-  // language itself switches immediately; LocaleSync confirms it from the URL.
+  // (SPA navigation, so an in-progress compression is not lost). The URL
+  // is the single source of truth for the language — this deliberately
+  // does NOT call i18n.changeLanguage itself. Calling changeLanguage here
+  // AND navigating raced with LocaleSync: the effect could observe the
+  // new language against the old URL and "correct" it back, and the stale
+  // saved choice then bounced the URL back too, so HI -> EN never worked.
+  // The chosen language travels in navigation state instead, and
+  // LocaleSync (the only writer) applies it from the URL/state.
   const changeLng = (lng: string) => {
-    void i18n.changeLanguage(lng);
     const params = new URLSearchParams(location.search);
     params.delete('lng');
     const search = params.toString();
-    navigate(`${localizePath(location.pathname, lng)}${search ? `?${search}` : ''}${location.hash}`);
+    navigate(`${localizePath(location.pathname, lng)}${search ? `?${search}` : ''}${location.hash}`, { state: { lng } });
   };
   const linkCls = ({ isActive }: { isActive: boolean }) =>
     `rounded-lg px-3 py-1.5 text-sm font-medium ${isActive ? 'text-white' : 'muted'}`;
