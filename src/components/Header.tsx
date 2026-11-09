@@ -58,7 +58,7 @@ export default function Header() {
           <span className="truncate text-base font-semibold">{t('brand')}</span>
         </LocalizedLink>
         <nav className="hidden items-center gap-1 lg:flex" aria-label="Main">
-          {LINKS.map((l) => <LocalizedNavLink key={l.to} to={l.to} style={({ isActive }) => (isActive ? { background: 'var(--accent)', color: 'var(--accent-text)' } : undefined)} className={linkCls}>{t(l.key)}</LocalizedNavLink>)}
+          {LINKS.map((l) => <LocalizedNavLink key={l.to} to={l.to} end={l.to === '/'} style={({ isActive }) => (isActive ? { background: 'var(--accent)', color: 'var(--accent-text)' } : undefined)} className={linkCls}>{t(l.key)}</LocalizedNavLink>)}
         </nav>
         <div className="flex items-center gap-2">
           <div className="card flex p-1 text-xs font-semibold">
@@ -73,7 +73,7 @@ export default function Header() {
       </div>
       {open && (
         <nav id="mobile-nav" className="mx-auto mt-3 grid max-w-7xl gap-1 pb-2 lg:hidden" aria-label="Mobile">
-          {LINKS.map((l) => <LocalizedNavLink key={l.to} to={l.to} onClick={() => setOpen(false)} className="rounded-lg px-3 py-2 text-sm font-medium" style={({ isActive }) => (isActive ? { background: 'var(--surface-2)' } : undefined)}>{t(l.key)}</LocalizedNavLink>)}
+          {LINKS.map((l) => <LocalizedNavLink key={l.to} to={l.to} end={l.to === '/'} onClick={() => setOpen(false)} className="rounded-lg px-3 py-2 text-sm font-medium" style={({ isActive }) => (isActive ? { background: 'var(--surface-2)' } : undefined)}>{t(l.key)}</LocalizedNavLink>)}
         </nav>
       )}
       </header>
