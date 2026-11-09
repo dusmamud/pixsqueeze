@@ -145,10 +145,15 @@ export default function HomePage() {
 
       <Stepper />
 
-      {/* Tool: sidebar settings on desktop, stacked on mobile/tablet. */}
+      {/* Tool: sidebar settings on desktop, stacked on mobile/tablet.
+          Progressive disclosure: the settings configure the images, so
+          they appear only once an image exists — with no images the panel
+          is hidden instead of showing controls that do nothing. */}
       <section id="tool" className="mt-12 scroll-mt-4">
-        <div className="grid items-start gap-5 lg:grid-cols-[340px_minmax(0,1fr)]">
-          <div className="lg:sticky lg:top-4"><SettingsPanel /></div>
+        <div className={`grid items-start gap-5 ${s.jobs.length > 0 ? 'lg:grid-cols-[340px_minmax(0,1fr)]' : ''}`}>
+          {s.jobs.length > 0 && (
+            <div className="lg:sticky lg:top-4"><SettingsPanel /></div>
+          )}
           <div className="min-w-0 space-y-4">
             {notice && (
               <div role="alert" className="alert">
