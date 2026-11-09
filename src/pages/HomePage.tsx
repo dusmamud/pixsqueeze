@@ -103,6 +103,11 @@ export default function HomePage() {
   const savedPct = summary && summary.original ? Math.round((1 - summary.compressed / summary.original) * 100) : 0;
   const doneCount = s.jobs.filter((j) => j.status === 'done').length;
   const failedCount = s.jobs.filter((j) => j.status === 'failed').length;
+  // Jobs left to compress: 'waiting' or 'failed' (retry). When this is 0
+  // every job is done and the Compress-all button dims instead of staying
+  // fully green — clicking it would do nothing (compressAll early-returns
+  // on an empty queue), so it must not look active.
+  const pendingCount = s.jobs.filter((j) => j.status !== 'done').length;
 
   return (
     <div>
@@ -177,7 +182,7 @@ export default function HomePage() {
               <div className="card sticky top-2 z-20 flex flex-wrap items-center justify-between gap-3 p-3">
                 <p className="text-sm font-medium">{s.jobs.length} {t('jobsCount', { count: s.jobs.length })} · {doneCount} {t('done')}</p>
                 <div className="flex flex-wrap gap-2">
-                  <button className={`btn-primary btn-compress text-sm${batchRunning ? ' btn-busy' : ''}`} disabled={batchRunning} aria-busy={batchRunning} onClick={() => void compressAll()}>
+                  <button className={`btn-primary btn-compress text-sm${batchRunning ? ' btn-busy' : ''}`} disabled={batchRunning || pendingCount === 0} aria-busy={batchRunning} onClick={() => void compressAll()}>
                     {batchRunning && <Loader2 className="animate-spin" size={16} aria-hidden="true" />}{batchRunning ? `${t('compressingCount')}…` : t('compressAll')}
                   </button>
                   <button className={`btn-ghost text-sm${zipRunning ? ' btn-busy' : ''}`} disabled={zipRunning || !doneCount} aria-busy={zipRunning} onClick={() => void downloadAllZip()}>{zipRunning && <Loader2 className="animate-spin" size={16} aria-hidden="true" />}{zipRunning ? t('downloading') : t('downloadAll')}</button>
