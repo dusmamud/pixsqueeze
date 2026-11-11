@@ -18,8 +18,14 @@ export default function ImageCard({ job, onRetry }: { job: Job; onRetry?: (job: 
   return (
     <motion.article initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="card overflow-hidden p-3 sm:p-4">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-        <div className="h-44 w-full shrink-0 overflow-hidden rounded-lg sm:h-28 sm:w-44" style={{ background: 'var(--surface-2)' }}>
-          <img src={job.resultUrl || job.previewUrl} alt={job.file.name} className="h-full w-full object-cover" />
+        <div className="flex h-44 w-full shrink-0 items-center justify-center overflow-hidden rounded-lg sm:h-28 sm:w-44" style={{ background: 'var(--surface-2)' }}>
+          {/* A failed file decodes to nothing — show a marker instead of a
+              broken-image thumbnail. */}
+          {job.status === 'failed' ? (
+            <TriangleAlert size={24} aria-hidden="true" style={{ color: 'var(--danger)' }} />
+          ) : (
+            <img src={job.resultUrl || job.previewUrl} alt={job.file.name} className="h-full w-full object-cover" />
+          )}
         </div>
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-semibold" title={job.file.name}>{job.file.name}</p>
@@ -37,7 +43,9 @@ export default function ImageCard({ job, onRetry }: { job: Job; onRetry?: (job: 
         <div className="flex flex-wrap gap-2 sm:flex-col sm:items-end">
           {job.resultUrl && job.resultName && <a className="btn-primary text-sm" href={job.resultUrl} download={job.resultName}><Download size={15} aria-hidden="true" />{t('download')}</a>}
           <div className="flex gap-2">
-            <button className="btn-ghost text-sm" onClick={() => setShowCrop(true)}><CropIcon size={15} aria-hidden="true" />{t('crop')}</button>
+            {/* No Crop on a failed job: there is nothing decodable to crop —
+                the dialog would open on a broken image with Apply disabled. */}
+            {job.status !== 'failed' && <button className="btn-ghost text-sm" onClick={() => setShowCrop(true)}><CropIcon size={15} aria-hidden="true" />{t('crop')}</button>}
             {job.resultUrl && <button className="btn-ghost text-sm" aria-pressed={showCompare} onClick={() => setShowCompare(!showCompare)}><Columns2 size={15} aria-hidden="true" />{t('compare')}</button>}
             {job.status === 'failed' && onRetry && <button className="btn-primary text-sm" onClick={() => onRetry(job)}><RotateCcw size={15} aria-hidden="true" />{t('retry')}</button>}
             <button aria-label={t('remove')} className="btn-ghost" onClick={() => removeJob(job.id)}><X size={16} aria-hidden="true" /></button>

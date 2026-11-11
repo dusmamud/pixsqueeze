@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { UploadCloud, TriangleAlert, X } from 'lucide-react';
+import { UploadCloud, TriangleAlert, X, Lock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useCompressorStore } from '../store/useCompressorStore';
 
@@ -26,6 +26,9 @@ export default function DropzoneArea() {
         <p className="text-lg font-medium">{t('dropTitle')}</p>
         <p className="muted mt-1 text-sm">{t('dropSub')}</p>
         <p className="muted mt-1 text-xs">{t('pasteHint')}</p>
+        {/* Trust line at the decision point: the footer says the same thing,
+            but this is where the user decides whether to hand over a file. */}
+        <p className="muted mt-3 flex items-center justify-center gap-1.5 text-xs"><Lock size={12} aria-hidden="true" />{t('dropPrivacy')}</p>
       </div>
       {rejected && (
         <div role="alert" className="alert mt-3">

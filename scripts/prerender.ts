@@ -162,6 +162,26 @@ for (const meta of LOCALES) {
       ...LOCALES.filter((l) => l.code !== code).map(
         (l) => `<meta property="og:locale:alternate" content="${ogLocale(l.code)}" />`,
       ),
+      `<meta property="og:image" content="${SITE_URL}/sample.png" />`,
+      `<meta property="og:image:width" content="1200" />`,
+      `<meta property="og:image:height" content="800" />`,
+      `<meta property="og:image:alt" content="${esc(t('ogImageAlt'))}" />`,
+      // Structured data for the tool itself, home only — this is the page
+      // search engines should treat as the application.
+      ...(route === ''
+        ? [
+            `<script type="application/ld+json">${JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'WebApplication',
+              name: 'ImgCompressor',
+              applicationCategory: 'MultimediaApplication',
+              operatingSystem: 'Web browser',
+              url: SITE_URL,
+              description: desc,
+              offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD', category: 'free' },
+            })}</script>`,
+          ]
+        : []),
     ].join('\n    ');
     const page = shell
       .replace(/<html lang="en"([^>]*)>/, `<html lang="${code}" dir="${meta.dir}"$1>`)

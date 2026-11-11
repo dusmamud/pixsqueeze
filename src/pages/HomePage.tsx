@@ -24,8 +24,12 @@ const FEATURES = [
   { icon: WifiOff, title: 'feat6Title', text: 'feat6Text' },
 ] as const;
 
+const isPasteAccepted = (f: File) =>
+  ['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'image/heic', 'image/heif'].includes(f.type.toLowerCase()) ||
+  /\.(jpe?g|png|webp|avif|heic|heif)$/i.test(f.name);
+
 export default function HomePage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const s = useCompressorStore();
   const [batchRunning, setBatchRunning] = useState(false);
   const [batchDone, setBatchDone] = useState(0);
@@ -36,12 +40,23 @@ export default function HomePage() {
   // App-level notice for errors that belong to no single job (sample
   // image, ZIP download). Shown once, dismissible, announced to AT.
   const [notice, setNotice] = useState<string | null>(null);
+  // A pasted file outside the supported list (e.g. an animated GIF) gets
+  // the same rejection the dropzone shows, instead of becoming a job.
+  const [pasteRejected, setPasteRejected] = useState<string | null>(null);
 
   useEffect(() => { void detectSupportedFormats().then((f) => s.setSupportedFormats(f)).catch(() => undefined); }, []);
   useEffect(() => {
+    // Paste used to bypass the dropzone's accept list: a GIF was silently
+    // accepted and its animation discarded on encode. Validate against the
+    // same list (mime OR extension — clipboard images often lack one).
     const onPaste = (e: ClipboardEvent) => {
-      const files = Array.from(e.clipboardData?.files ?? []).filter((f) => f.type.startsWith('image/'));
-      if (files.length) useCompressorStore.getState().addFiles(files);
+      const images = Array.from(e.clipboardData?.files ?? []).filter((f) => f.type.startsWith('image/'));
+      if (!images.length) return;
+      const valid = images.filter(isPasteAccepted);
+      const rejected = images.filter((f) => !isPasteAccepted(f));
+      if (rejected.length) setPasteRejected(i18n.t('errNotImage', { count: rejected.length, name: rejected[0].name }));
+      else setPasteRejected(null);
+      if (valid.length) useCompressorStore.getState().addFiles(valid);
     };
     window.addEventListener('paste', onPaste);
     return () => window.removeEventListener('paste', onPaste);
@@ -124,7 +139,7 @@ export default function HomePage() {
             </div>
             <div className="mt-8 grid max-w-md grid-cols-2 gap-4 sm:grid-cols-4">
               <div><p className="mono text-xl font-medium">0</p><p className="muted text-xs">{t('statUploads')}</p></div>
-              <div><p className="mono text-xl font-medium">4</p><p className="muted text-xs">{t('statFormats')}</p></div>
+              <div><p className="mono text-xl font-medium">{s.supportedFormats.length}</p><p className="muted text-xs">{t('statFormats')}</p></div>
               <div><p className="mono text-xl font-medium">2</p><p className="muted text-xs">{t('statLanguages')}</p></div>
               <div><p className="flex h-7 items-center text-xl font-medium"><Check size={20} aria-hidden="true" /></p><p className="muted text-xs">{t('statOffline')}</p></div>
             </div>
@@ -160,6 +175,15 @@ export default function HomePage() {
                 <TriangleAlert size={16} className="mt-px shrink-0" style={{ color: 'var(--danger)' }} aria-hidden="true" />
                 <p className="min-w-0 flex-1 text-sm">{t(notice)}</p>
                 <button aria-label={t('dismiss')} className="shrink-0 rounded-lg p-1" onClick={() => setNotice(null)}>
+                  <X size={16} aria-hidden="true" />
+                </button>
+              </div>
+            )}
+            {pasteRejected && (
+              <div role="alert" className="alert">
+                <TriangleAlert size={16} className="mt-px shrink-0" style={{ color: 'var(--danger)' }} aria-hidden="true" />
+                <p className="min-w-0 flex-1 text-sm">{pasteRejected}</p>
+                <button aria-label={t('dismiss')} className="shrink-0 rounded-lg p-1" onClick={() => setPasteRejected(null)}>
                   <X size={16} aria-hidden="true" />
                 </button>
               </div>

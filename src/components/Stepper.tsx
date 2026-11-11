@@ -14,7 +14,7 @@ export default function Stepper() {
   if (jobs.some((j) => j.status === 'processing' || j.status === 'done')) current = 2;
   if (jobs.length > 0 && jobs.every((j) => j.status === 'done')) current = 3;
   return (
-    <nav aria-label="Progress">
+    <nav aria-label={t('stepperLabel')}>
       <ol className="mx-auto flex max-w-xl items-start justify-between">
       {keys.map((key, i) => {
         const Icon = ICONS[i];

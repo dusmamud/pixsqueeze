@@ -57,7 +57,7 @@ export default function Header() {
           <span className="grid h-9 w-9 place-items-center rounded-xl" style={{ background: 'var(--accent)', color: 'var(--accent-text)' }}><ImageDown size={20} aria-hidden="true" /></span>
           <span className="truncate text-base font-semibold">{t('brand')}</span>
         </LocalizedLink>
-        <nav className="hidden items-center gap-1 lg:flex" aria-label="Main">
+        <nav className="hidden items-center gap-1 lg:flex" aria-label={t('navMain')}>
           {LINKS.map((l) => <LocalizedNavLink key={l.to} to={l.to} end={l.to === '/'} style={({ isActive }) => (isActive ? { background: 'var(--accent)', color: 'var(--accent-text)' } : undefined)} className={linkCls}>{t(l.key)}</LocalizedNavLink>)}
         </nav>
         <div className="flex items-center gap-2">
@@ -68,11 +68,11 @@ export default function Header() {
           </div>
           <button aria-label={theme === 'dark' ? t('switchToLight') : t('switchToDark')} className="card p-2" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>{theme === 'dark' ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}</button>
           <a href={`${homePath}#tool`} onClick={goToTool} className="hidden h-9 items-center justify-center rounded-[10px] px-4 text-sm font-semibold transition hover:brightness-110 xl:inline-flex" style={{ background: 'var(--accent)', color: 'var(--accent-text)', boxShadow: '0 1px 2px rgba(0,0,0,.3), 0 6px 16px rgba(0,0,0,.25)' }}>{t('startCompressing')}</a>
-          <button aria-label="Menu" aria-expanded={open} aria-controls="mobile-nav" className="card p-2 lg:hidden" onClick={() => setOpen(!open)}>{open ? <X size={18} aria-hidden="true" /> : <Menu size={18} aria-hidden="true" />}</button>
+          <button aria-label={t('menuLabel')} aria-expanded={open} aria-controls="mobile-nav" className="card p-2 lg:hidden" onClick={() => setOpen(!open)}>{open ? <X size={18} aria-hidden="true" /> : <Menu size={18} aria-hidden="true" />}</button>
         </div>
       </div>
       {open && (
-        <nav id="mobile-nav" className="mx-auto mt-3 grid max-w-7xl gap-1 pb-2 lg:hidden" aria-label="Mobile">
+        <nav id="mobile-nav" className="mx-auto mt-3 grid max-w-7xl gap-1 pb-2 lg:hidden" aria-label={t('navMobile')}>
           {LINKS.map((l) => <LocalizedNavLink key={l.to} to={l.to} end={l.to === '/'} onClick={() => setOpen(false)} className="rounded-lg px-3 py-2 text-sm font-medium" style={({ isActive }) => (isActive ? { background: 'var(--surface-2)' } : undefined)}>{t(l.key)}</LocalizedNavLink>)}
         </nav>
       )}

@@ -13,8 +13,8 @@ export default function Footer() {
           <p className="muted mt-3 text-sm">{t('footerNote')}</p>
           <p className="muted mt-2 flex items-center gap-1.5 text-xs"><Lock size={12} aria-hidden="true" />{t('privacyBadge')}</p>
         </div>
-        <nav aria-label="Product"><p className="mb-3 text-sm font-semibold">{t('footerProduct')}</p><ul className="muted space-y-2 text-sm"><li><LocalizedLink to="/">{t('navHome')}</LocalizedLink></li><li><LocalizedLink to="/about">{t('navAbout')}</LocalizedLink></li><li><LocalizedLink to="/faq">{t('navFaq')}</LocalizedLink></li></ul></nav>
-        <nav aria-label="Legal"><p className="mb-3 text-sm font-semibold">{t('footerLegal')}</p><ul className="muted space-y-2 text-sm"><li><LocalizedLink to="/privacy">{t('navPrivacy')}</LocalizedLink></li><li><LocalizedLink to="/terms">{t('navTerms')}</LocalizedLink></li></ul></nav>
+        <nav aria-label={t('footerProduct')}><p className="mb-3 text-sm font-semibold">{t('footerProduct')}</p><ul className="muted space-y-2 text-sm"><li><LocalizedLink to="/">{t('navHome')}</LocalizedLink></li><li><LocalizedLink to="/about">{t('navAbout')}</LocalizedLink></li><li><LocalizedLink to="/faq">{t('navFaq')}</LocalizedLink></li></ul></nav>
+        <nav aria-label={t('footerLegal')}><p className="mb-3 text-sm font-semibold">{t('footerLegal')}</p><ul className="muted space-y-2 text-sm"><li><LocalizedLink to="/privacy">{t('navPrivacy')}</LocalizedLink></li><li><LocalizedLink to="/terms">{t('navTerms')}</LocalizedLink></li></ul></nav>
         <div><p className="mb-3 text-sm font-semibold">ImgCompressor</p><p className="muted text-sm">{t('heroSub')}</p></div>
       </div>
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 pb-6 text-xs sm:flex-row" style={{ borderTop: '1px solid var(--border)', paddingTop: 16 }}>
