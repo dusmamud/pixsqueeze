@@ -3,6 +3,7 @@ import { useDropzone } from 'react-dropzone';
 import { UploadCloud, TriangleAlert, X, Lock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useCompressorStore } from '../store/useCompressorStore';
+import { MAX_BATCH_BYTES, MAX_FILE_BYTES, MAX_FILES_PER_BATCH, limitLabel, limitRejectionMessage } from '../lib/limits';
 
 export default function DropzoneArea() {
   const { t } = useTranslation();
@@ -10,7 +11,12 @@ export default function DropzoneArea() {
   const [rejected, setRejected] = useState<string | null>(null);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: { 'image/*': ['.jpg', '.jpeg', '.png', '.webp', '.avif', '.heic', '.heif'] },
-    onDrop: (files) => { setRejected(null); addFiles(files); },
+    // addFiles enforces the batch limits and reports what they rejected —
+    // a file the limits stop must say why, not just never appear.
+    onDrop: (files) => {
+      const res = addFiles(files);
+      setRejected(res.rejected.length ? limitRejectionMessage(t, res.rejected) : null);
+    },
     // Without this, dropping a non-image file fails silently — the file
     // just never appears and the user has no idea why.
     onDropRejected: (rejections) => {
@@ -29,6 +35,7 @@ export default function DropzoneArea() {
         {/* Trust line at the decision point: the footer says the same thing,
             but this is where the user decides whether to hand over a file. */}
         <p className="muted mt-3 flex items-center justify-center gap-1.5 text-xs"><Lock size={12} aria-hidden="true" />{t('dropPrivacy')}</p>
+        <p className="muted mt-1 text-xs">{t('dropLimits', { maxFiles: MAX_FILES_PER_BATCH, maxFile: limitLabel(MAX_FILE_BYTES), maxBatch: limitLabel(MAX_BATCH_BYTES) })}</p>
       </div>
       {rejected && (
         <div role="alert" className="alert mt-3">

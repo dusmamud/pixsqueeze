@@ -182,6 +182,21 @@ for (const meta of LOCALES) {
             })}</script>`,
           ]
         : []),
+      // FAQ structured data, FAQ page only (both locales) — the same four
+      // Q&As the page shows, so the schema can never drift from the copy.
+      ...(route === 'faq'
+        ? [
+            `<script type="application/ld+json">${JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'FAQPage',
+              mainEntity: [1, 2, 3, 4].map((n) => ({
+                '@type': 'Question',
+                name: t(`faqQ${n}`),
+                acceptedAnswer: { '@type': 'Answer', text: t(`faqA${n}`) },
+              })),
+            })}</script>`,
+          ]
+        : []),
     ].join('\n    ');
     const page = shell
       .replace(/<html lang="en"([^>]*)>/, `<html lang="${code}" dir="${meta.dir}"$1>`)

@@ -1,6 +1,12 @@
 import { create } from 'zustand';
 import type { OutputFormat } from '../lib/formats';
 import type { ErrorKey } from '../lib/errors';
+import { checkAddLimits, type LimitRejection } from '../lib/limits';
+
+export interface AddFilesResult {
+  added: number;
+  rejected: LimitRejection[];
+}
 
 export type JobStatus = 'waiting' | 'processing' | 'done' | 'failed';
 export interface Job {
@@ -30,7 +36,10 @@ interface State {
   targetSizeKb: number;
   supportedFormats: OutputFormat[];
   theme: Theme;
-  addFiles: (files: File[]) => void;
+  /** Adds files, enforcing the batch limits (see lib/limits.ts). Returns
+      what was added and what the limits rejected, so the caller can tell
+      the user which limit stopped a file instead of dropping it silently. */
+  addFiles: (files: File[]) => AddFilesResult;
   removeJob: (id: string) => void;
   clearAll: () => void;
   setSettings: (p: Partial<Pick<State, 'format' | 'quality' | 'maxWidthOrHeight' | 'stripMetadata' | 'targetSizeKb'>>) => void;
@@ -51,12 +60,22 @@ export const useCompressorStore = create<State>((set) => ({
   // in index.html (avoids a theme flash). Guarded so the store is importable
   // in Node (prerender) where document does not exist.
   theme: ((typeof document !== 'undefined' ? document.documentElement.getAttribute('data-theme') : null) as Theme) || 'dark',
-  addFiles: (files) => set((s) => ({
-    jobs: [...s.jobs, ...files.filter((f) => f.type.startsWith('image/') || /\.(heic|heif|avif)$/i.test(f.name)).map((file) => ({
-      id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-      file, previewUrl: URL.createObjectURL(file), status: 'waiting' as JobStatus,
-    }))],
-  })),
+  addFiles: (files) => {
+    const state = useCompressorStore.getState();
+    const images = files.filter((f) => f.type.startsWith('image/') || /\.(heic|heif|avif)$/i.test(f.name));
+    const { accepted, rejected } = checkAddLimits(
+      images,
+      state.jobs.length,
+      state.jobs.reduce((a, j) => a + j.file.size, 0),
+    );
+    set((s) => ({
+      jobs: [...s.jobs, ...accepted.map((file) => ({
+        id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+        file, previewUrl: URL.createObjectURL(file), status: 'waiting' as JobStatus,
+      }))],
+    }));
+    return { added: accepted.length, rejected };
+  },
   removeJob: (id) => set((s) => ({ jobs: s.jobs.filter((j) => j.id !== id) })),
   clearAll: () => set({ jobs: [] }),
   setSettings: (p) => set(p),

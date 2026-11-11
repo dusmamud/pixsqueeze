@@ -2,13 +2,14 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 import { ReactCompareSlider, ReactCompareSliderImage } from 'react-compare-slider';
-import { ShieldCheck, Zap, Layers, SlidersHorizontal, ImageDown, WifiOff, CheckCircle2, Loader2, Lock, Check, TriangleAlert, X } from 'lucide-react';
+import { ShieldCheck, Zap, Layers, SlidersHorizontal, ImageDown, WifiOff, CheckCircle2, Loader2, Lock, Check, TriangleAlert, X, ChevronDown } from 'lucide-react';
 import DropzoneArea from '../components/DropzoneArea';
 import SettingsPanel from '../components/SettingsPanel';
 import ImageCard from '../components/ImageCard';
 import Stepper from '../components/Stepper';
 import { useCompressorStore, type Job } from '../store/useCompressorStore';
 import { detectSupportedFormats, FORMAT_EXT, formatBytes } from '../lib/formats';
+import { limitRejectionMessage } from '../lib/limits';
 import { compressImage } from '../lib/compress';
 import { errorKeyFor } from '../lib/errors';
 import { readExifSummary } from '../lib/metadata';
@@ -23,6 +24,8 @@ const FEATURES = [
   { icon: ImageDown, title: 'feat5Title', text: 'feat5Text' },
   { icon: WifiOff, title: 'feat6Title', text: 'feat6Text' },
 ] as const;
+
+const FAQ_ITEMS = [['faqQ1', 'faqA1'], ['faqQ2', 'faqA2'], ['faqQ3', 'faqA3'], ['faqQ4', 'faqA4']] as const;
 
 const isPasteAccepted = (f: File) =>
   ['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'image/heic', 'image/heif'].includes(f.type.toLowerCase()) ||
@@ -53,10 +56,17 @@ export default function HomePage() {
       const images = Array.from(e.clipboardData?.files ?? []).filter((f) => f.type.startsWith('image/'));
       if (!images.length) return;
       const valid = images.filter(isPasteAccepted);
-      const rejected = images.filter((f) => !isPasteAccepted(f));
-      if (rejected.length) setPasteRejected(i18n.t('errNotImage', { count: rejected.length, name: rejected[0].name }));
-      else setPasteRejected(null);
-      if (valid.length) useCompressorStore.getState().addFiles(valid);
+      const typeRejected = images.filter((f) => !isPasteAccepted(f));
+      const parts: string[] = [];
+      if (typeRejected.length) parts.push(i18n.t('errNotImage', { count: typeRejected.length, name: typeRejected[0].name }));
+      // addFiles also enforces the batch limits — a pasted file the limits
+      // stop gets the same named-limit alert as a dropped one.
+      if (valid.length) {
+        const res = useCompressorStore.getState().addFiles(valid);
+        const limitMsg = limitRejectionMessage(i18n.t.bind(i18n), res.rejected);
+        if (limitMsg) parts.push(limitMsg);
+      }
+      setPasteRejected(parts.length ? parts.join(' ') : null);
     };
     window.addEventListener('paste', onPaste);
     return () => window.removeEventListener('paste', onPaste);
@@ -165,7 +175,8 @@ export default function HomePage() {
           they appear only once an image exists — with no images the panel
           is hidden instead of showing controls that do nothing. */}
       <section id="tool" className="mt-12 scroll-mt-4">
-        <div className={`grid items-start gap-5 ${s.jobs.length > 0 ? 'lg:grid-cols-[340px_minmax(0,1fr)]' : ''}`}>
+        <h2 className="text-2xl font-medium sm:text-3xl">{t('toolTitle')}</h2>
+        <div className={`mt-6 grid items-start gap-5 ${s.jobs.length > 0 ? 'lg:grid-cols-[340px_minmax(0,1fr)]' : ''}`}>
           {s.jobs.length > 0 && (
             <div className="lg:sticky lg:top-4"><SettingsPanel /></div>
           )}
@@ -236,6 +247,21 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* How it works: the same three steps as the stepper, as plain text
+          for readers and crawlers — the stepper above is visual, this is
+          the readable version. Copy reuses the how* keys (dead until now). */}
+      <section className="mt-12">
+        <h2 className="text-2xl font-medium sm:text-3xl">{t('howTitle')}</h2>
+        <div className="mt-6 grid gap-6 sm:grid-cols-3">
+          {(['how1', 'how2', 'how3'] as const).map((k) => (
+            <div key={k}>
+              <h3 className="font-medium">{t(`${k}Title`)}</h3>
+              <p className="muted mt-1 text-sm leading-relaxed">{t(`${k}Text`)}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <section className="mt-12">
         <h2 className="text-2xl font-medium sm:text-3xl">{t('featuresTitle')}</h2>
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -246,6 +272,33 @@ export default function HomePage() {
               <p className="muted mt-1 text-sm leading-relaxed">{t(f.text)}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* FAQ on home: same Q&As as the /faq page, as native disclosures —
+          keyboard-accessible with no extra state. */}
+      <section className="mt-12">
+        <h2 className="text-2xl font-medium sm:text-3xl">{t('faqTitle')}</h2>
+        <div className="mt-6 space-y-4">
+          {FAQ_ITEMS.map(([q, a]) => (
+            <details key={q} className="card group p-5">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-medium [&::-webkit-details-marker]:hidden">
+                {t(q)}
+                <ChevronDown size={18} className="muted shrink-0 transition-transform group-open:rotate-180" aria-hidden="true" />
+              </summary>
+              <p className="muted mt-2 leading-relaxed">{t(a)}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      {/* Final CTA: one line, then back up to the tool. */}
+      <section className="mt-12">
+        <div className="card p-8 text-center">
+          <p className="text-lg font-medium">{t('ctaBandLine')}</p>
+          <div className="mt-5">
+            <a href="#tool" className="btn-primary">{t('startCompressing')}</a>
+          </div>
         </div>
       </section>
     </div>
