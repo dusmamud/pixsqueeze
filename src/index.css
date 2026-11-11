@@ -116,6 +116,11 @@ input[type='text'], input[type='number'], input[type='email'], input[type='url']
 .crop-stage { display: grid; place-items: center; height: min(60dvh, 520px); overflow: hidden; border-radius: 12px; background: var(--surface-2); }
 .crop-dialog .ReactCrop__child-wrapper > img { max-height: min(60dvh, 520px); }
 .btn-primary, .btn-ghost { min-height: 44px; }  /* display comes from the component layer, so Tailwind `hidden` still wins */
+/* Smooth in-page scrolling for the #tool anchors (hero CTA, final CTA
+   band); the header CTA already smooth-scrolls via scrollIntoView. The
+   tool section's scroll-mt-4 is the anchor offset (unpinned header). */
+html { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  html { scroll-behavior: auto; }
 }

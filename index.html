@@ -17,6 +17,11 @@
         document.documentElement.setAttribute('data-theme', t);
       } catch (e) {}
     </script>
+    <!-- Scroll reveals render their initial state (opacity 0) into the
+         prerendered HTML; without JS they would stay invisible. This
+         noscript rule restores them (the !important beats the inline
+         style) so the sections are fully readable with JS disabled. -->
+    <noscript><style>[data-reveal]{opacity:1 !important;transform:none !important}</style></noscript>
     <title>ImgCompressor — Client-Side Image Compressor</title>
   </head>
   <body>

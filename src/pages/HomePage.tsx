@@ -7,6 +7,7 @@ import { ShieldCheck, Zap, Layers, SlidersHorizontal, ImageDown, WifiOff, CheckC
 import DropzoneArea from '../components/DropzoneArea';
 import SettingsPanel from '../components/SettingsPanel';
 import ImageCard from '../components/ImageCard';
+import Reveal from '../components/Reveal';
 import Stepper from '../components/Stepper';
 import { useCompressorStore, type Job } from '../store/useCompressorStore';
 import { detectSupportedFormats, FORMAT_EXT, formatBytes } from '../lib/formats';
@@ -251,7 +252,8 @@ export default function HomePage() {
       {/* How it works: the same three steps as the stepper, as plain text
           for readers and crawlers — the stepper above is visual, this is
           the readable version. Copy reuses the how* keys (dead until now). */}
-      <section className="mt-12">
+      <Reveal className="mt-12">
+      <section>
         <h2 className="text-2xl font-medium sm:text-3xl">{t('howTitle')}</h2>
         <div className="mt-6 grid gap-6 sm:grid-cols-3">
           {(['how1', 'how2', 'how3'] as const).map((k) => (
@@ -262,8 +264,10 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+      </Reveal>
 
-      <section className="mt-12">
+      <Reveal className="mt-12">
+      <section>
         <h2 className="text-2xl font-medium sm:text-3xl">{t('featuresTitle')}</h2>
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map((f) => (
@@ -275,10 +279,12 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+      </Reveal>
 
       {/* FAQ on home: same Q&As as the /faq page, as native disclosures —
           keyboard-accessible with no extra state. */}
-      <section className="mt-12">
+      <Reveal className="mt-12">
+      <section>
         <h2 className="text-2xl font-medium sm:text-3xl">{t('faqTitle')}</h2>
         <div className="mt-6 space-y-4">
           {FAQ_ITEMS.map(([q, a]) => (
@@ -292,9 +298,11 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+      </Reveal>
 
       {/* Final CTA: one line, then back up to the tool. */}
-      <section className="mt-12">
+      <Reveal className="mt-12">
+      <section>
         <div className="card p-8 text-center">
           <p className="text-lg font-medium">{t('ctaBandLine')}</p>
           <div className="mt-5">
@@ -302,6 +310,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      </Reveal>
     </div>
   );
 }
