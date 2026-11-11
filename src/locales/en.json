@@ -150,6 +150,7 @@
   "switchToDark": "Switch to dark theme",
   "targetSize": "Target size",
   "targetSizeUnit": "Target size unit",
+  "toastZipDone": "ZIP downloaded.",
   "targetSizeNote": "0 = off. When set, quality above is the maximum — the compressor lowers it as needed so the file fits under the target.",
   "targetMissed": "Couldn't reach target"
 }

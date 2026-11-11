@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { ReactCompareSlider, ReactCompareSliderImage } from 'react-compare-slider';
 import { ShieldCheck, Zap, Layers, SlidersHorizontal, ImageDown, WifiOff, CheckCircle2, Loader2, Lock, Check, TriangleAlert, X, ChevronDown } from 'lucide-react';
@@ -14,7 +15,7 @@ import { compressImage } from '../lib/compress';
 import { errorKeyFor } from '../lib/errors';
 import { readExifSummary } from '../lib/metadata';
 import { downloadAsZip } from '../lib/download';
-import { outputName as outName } from '../lib/utils';
+import { cn, outputName as outName } from '../lib/utils';
 
 const FEATURES = [
   { icon: ShieldCheck, title: 'feat1Title', text: 'feat1Text' },
@@ -101,7 +102,7 @@ export default function HomePage() {
     try {
       const done = s.jobs.filter((j) => j.resultUrl && j.resultName);
       const files = await Promise.all(done.map(async (j) => ({ name: j.resultName!, blob: await fetch(j.resultUrl!).then((r) => r.blob()) })));
-      if (files.length) { await downloadAsZip(files, 'imgcompressor-compressed.zip'); setNotice(null); }
+      if (files.length) { await downloadAsZip(files, 'imgcompressor-compressed.zip'); setNotice(null); toast.success(t('toastZipDone')); }
     } catch {
       setNotice('errZip');
     } finally {
@@ -145,7 +146,7 @@ export default function HomePage() {
             <p className="muted mt-4 max-w-lg text-base sm:text-lg">{t('heroSub')}</p>
             <div className="mt-6 flex flex-wrap gap-3">
               <a href="#tool" className="btn-primary">{t('startCompressing')}</a>
-              <button className={`btn-ghost${sampleLoading ? ' btn-busy' : ''}`} disabled={sampleLoading} aria-busy={sampleLoading} onClick={() => void trySample()}>{sampleLoading && <Loader2 className="animate-spin" size={16} aria-hidden="true" />}{t('trySample')}</button>
+              <button className={cn('btn-ghost', sampleLoading && 'btn-busy')} disabled={sampleLoading} aria-busy={sampleLoading} onClick={() => void trySample()}>{sampleLoading && <Loader2 className="animate-spin" size={16} aria-hidden="true" />}{t('trySample')}</button>
             </div>
             <div className="mt-8 grid max-w-md grid-cols-2 gap-4 sm:grid-cols-4">
               <div><p className="mono text-xl font-medium">0</p><p className="muted text-xs">{t('statUploads')}</p></div>
@@ -176,7 +177,7 @@ export default function HomePage() {
           is hidden instead of showing controls that do nothing. */}
       <section id="tool" className="mt-12 scroll-mt-4">
         <h2 className="text-2xl font-medium sm:text-3xl">{t('toolTitle')}</h2>
-        <div className={`mt-6 grid items-start gap-5 ${s.jobs.length > 0 ? 'lg:grid-cols-[340px_minmax(0,1fr)]' : ''}`}>
+        <div className={cn('mt-6 grid items-start gap-5', s.jobs.length > 0 && 'lg:grid-cols-[340px_minmax(0,1fr)]')}>
           {s.jobs.length > 0 && (
             <div className="lg:sticky lg:top-4"><SettingsPanel /></div>
           )}
@@ -212,7 +213,7 @@ export default function HomePage() {
               {summary && !batchRunning && (
                 <motion.div role="status" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="card flex flex-wrap items-center justify-between gap-3 p-4">
                   <p className="flex items-center gap-2 text-sm font-semibold"><CheckCircle2 style={{ color: 'var(--accent)' }} aria-hidden="true" /> {t('batchDone')} {summary.count} {t('jobsCount', { count: summary.count })} · {t('totalOriginal')}: {formatBytes(summary.original)} → {t('totalCompressed')}: {formatBytes(summary.compressed)} · {savedPct}% {t('saved')}{failedCount > 0 ? ` · ${failedCount} ${t('batchFailed')}` : ''}</p>
-                  <button className={`btn-primary text-sm${zipRunning ? ' btn-busy' : ''}`} disabled={zipRunning} aria-busy={zipRunning} onClick={() => void downloadAllZip()}>{zipRunning && <Loader2 className="animate-spin" size={16} aria-hidden="true" />}{zipRunning ? t('downloading') : t('downloadAll')}</button>
+                  <button className={cn('btn-primary text-sm', zipRunning && 'btn-busy')} disabled={zipRunning} aria-busy={zipRunning} onClick={() => void downloadAllZip()}>{zipRunning && <Loader2 className="animate-spin" size={16} aria-hidden="true" />}{zipRunning ? t('downloading') : t('downloadAll')}</button>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -222,10 +223,10 @@ export default function HomePage() {
               <div className="card sticky top-2 z-20 flex flex-wrap items-center justify-between gap-3 p-3">
                 <p className="text-sm font-medium">{s.jobs.length} {t('jobsCount', { count: s.jobs.length })} · {doneCount} {t('done')}</p>
                 <div className="flex flex-wrap gap-2">
-                  <button className={`btn-primary btn-compress text-sm${batchRunning ? ' btn-busy' : ''}`} disabled={batchRunning || pendingCount === 0} aria-busy={batchRunning} onClick={() => void compressAll()}>
+                  <button className={cn('btn-primary btn-compress text-sm', batchRunning && 'btn-busy')} disabled={batchRunning || pendingCount === 0} aria-busy={batchRunning} onClick={() => void compressAll()}>
                     {batchRunning && <Loader2 className="animate-spin" size={16} aria-hidden="true" />}{batchRunning ? `${t('compressingCount')}…` : t('compressAll')}
                   </button>
-                  <button className={`btn-ghost text-sm${zipRunning ? ' btn-busy' : ''}`} disabled={zipRunning || !doneCount} aria-busy={zipRunning} onClick={() => void downloadAllZip()}>{zipRunning && <Loader2 className="animate-spin" size={16} aria-hidden="true" />}{zipRunning ? t('downloading') : t('downloadAll')}</button>
+                  <button className={cn('btn-ghost text-sm', zipRunning && 'btn-busy')} disabled={zipRunning || !doneCount} aria-busy={zipRunning} onClick={() => void downloadAllZip()}>{zipRunning && <Loader2 className="animate-spin" size={16} aria-hidden="true" />}{zipRunning ? t('downloading') : t('downloadAll')}</button>
                   <button className="btn-ghost text-sm" onClick={s.clearAll}>{t('clearAll')}</button>
                 </div>
               </div>
@@ -234,7 +235,7 @@ export default function HomePage() {
             {s.jobs.length === 0 ? (
               <div className="card py-10 text-center">
                 <p className="muted">{t('noImages')}</p>
-                <button className={`btn-ghost mt-4${sampleLoading ? ' btn-busy' : ''}`} disabled={sampleLoading} aria-busy={sampleLoading} onClick={() => void trySample()}>{sampleLoading && <Loader2 className="animate-spin" size={16} aria-hidden="true" />}{t('trySample')}</button>
+                <button className={cn('btn-ghost mt-4', sampleLoading && 'btn-busy')} disabled={sampleLoading} aria-busy={sampleLoading} onClick={() => void trySample()}>{sampleLoading && <Loader2 className="animate-spin" size={16} aria-hidden="true" />}{t('trySample')}</button>
               </div>
             ) : (
               <div className="space-y-3">

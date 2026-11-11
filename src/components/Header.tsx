@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Moon, Sun, ImageDown, Menu, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -18,6 +18,17 @@ export default function Header() {
   const { t, i18n } = useTranslation();
   const { theme, setTheme } = useCompressorStore();
   const [open, setOpen] = useState(false);
+  const menuBtnRef = useRef<HTMLButtonElement>(null);
+  // Escape closes the mobile menu and puts focus back on the button that
+  // opened it (without this, focus is left inside the unmounted nav).
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { setOpen(false); menuBtnRef.current?.focus(); }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open ]);
   const navigate = useNavigate();
   const location = useLocation();
   // Home in the current locale ('/' in English, '/hi/' in Hindi).
@@ -68,7 +79,7 @@ export default function Header() {
           </div>
           <button aria-label={theme === 'dark' ? t('switchToLight') : t('switchToDark')} className="card p-2" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>{theme === 'dark' ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}</button>
           <a href={`${homePath}#tool`} onClick={goToTool} className="hidden h-9 items-center justify-center rounded-[10px] px-4 text-sm font-semibold transition hover:brightness-110 xl:inline-flex" style={{ background: 'var(--accent)', color: 'var(--accent-text)', boxShadow: '0 1px 2px rgba(0,0,0,.3), 0 6px 16px rgba(0,0,0,.25)' }}>{t('startCompressing')}</a>
-          <button aria-label={t('menuLabel')} aria-expanded={open} aria-controls="mobile-nav" className="card p-2 lg:hidden" onClick={() => setOpen(!open)}>{open ? <X size={18} aria-hidden="true" /> : <Menu size={18} aria-hidden="true" />}</button>
+          <button ref={menuBtnRef} aria-label={t('menuLabel')} aria-expanded={open} aria-controls="mobile-nav" className="card p-2 lg:hidden" onClick={() => setOpen(!open)}>{open ? <X size={18} aria-hidden="true" /> : <Menu size={18} aria-hidden="true" />}</button>
         </div>
       </div>
       {open && (

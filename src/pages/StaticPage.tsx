@@ -3,9 +3,13 @@ import { useTranslation } from 'react-i18next';
 export function Prose({ titleKey, paras }: { titleKey: string; paras: string[] }) {
   const { t } = useTranslation();
   return (
-    <article className="mx-auto max-w-3xl py-10">
-      <h1 className="text-3xl font-medium sm:text-4xl">{t(titleKey)}</h1>
-      {paras.map((k, i) => <p key={i} className="muted mt-5 leading-relaxed">{t(k)}</p>)}
+    // `prose` owns the paragraph rhythm now (margins + line-height are the
+    // plugin's tuned defaults); colours stay the app's tokens via the
+    // .prose override in index.css, and the heading keeps the design's
+    // 500 weight and responsive size through the element modifiers.
+    <article className="prose mx-auto py-10 prose-headings:font-medium prose-h1:text-3xl sm:prose-h1:text-4xl">
+      <h1>{t(titleKey)}</h1>
+      {paras.map((k, i) => <p key={i}>{t(k)}</p>)}
     </article>
   );
 }

@@ -41,6 +41,12 @@ const documentElement = {
 };
 (globalThis as Record<string, unknown>).document = {
   documentElement,
+  // Sonner injects its stylesheet at import time (__insertCSS): it reads
+  // document.head (or getElementsByTagName('head')[0]), creates a <style>
+  // and appends a text node. The stub head/text node swallow that here;
+  // in the browser the real DOM gets the styles.
+  head: { appendChild: (_c: unknown) => {} },
+  createTextNode: () => makeElement(),
   querySelector: () => null,
   title: '',
   cookie: '',

@@ -1,6 +1,7 @@
 import { UploadCloud, SlidersHorizontal, Zap, Download, Check } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useCompressorStore } from '../store/useCompressorStore';
+import { cn } from '../lib/utils';
 
 const ICONS = [UploadCloud, SlidersHorizontal, Zap, Download];
 
@@ -26,7 +27,7 @@ export default function Stepper() {
               {active && <span className="absolute inset-0 rounded-full" style={{ border: '2px solid var(--accent)' }} />}
               {done ? <Check size={18} aria-hidden="true" /> : <Icon size={18} aria-hidden="true" />}
             </span>
-            <span className={`text-xs font-medium ${active ? '' : 'muted'}`}>{i + 1}. {t(key)}</span>
+            <span className={cn('text-xs font-medium', !active && 'muted')}>{i + 1}. {t(key)}</span>
           </li>
         );
       })}
